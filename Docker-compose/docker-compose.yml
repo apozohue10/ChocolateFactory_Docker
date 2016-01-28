@@ -1,0 +1,47 @@
+mongo:
+   image: mongo:2.6.11
+   volumes:
+     - /data/mongodb:/data/db
+   command: --smallfiles --nojournal 
+
+orion:
+   image: fiware/orion
+   links:
+     - mongo
+   ports:
+     - "1026:1026"
+   command: -dbhost mongo
+
+authzforce:
+   image: fiware/authzforce
+   volumes:
+     - /data/authzforce:/opt/authzforce/data/domains
+   ports:
+     - "8080:8080"
+
+idm:
+   image: apozohue10/idm
+   volumes:
+     - /data/idm/keystone.db:/opt/idm/keystone/keystone.db
+   ports:
+     - "5000:5000"
+     - "8000:8000"
+   links:
+     - authzforce
+
+pepproxy:
+   image: apozohue10/pepproxy
+   ports:
+     - "8070:8070"
+   links:
+     - idm
+     - authzforce
+
+chocolatefactory:
+   image: apozohue10/chocolatefactory
+   ports:
+     - "1028:1028"
+   links:
+     - idm
+     - pepproxy
+     - orion  
