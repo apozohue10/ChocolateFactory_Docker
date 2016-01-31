@@ -13,7 +13,7 @@ orion:
    command: -dbhost mongo
 
 authzforce:
-   image: fiware/authzforce
+   image: bitergia/authzforce:4.2.0
    volumes:
      - /data/authzforce:/opt/authzforce/data/domains
    ports:

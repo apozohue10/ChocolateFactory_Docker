@@ -33,7 +33,7 @@ La implementación a través de Docker se basa en dos partes:
 Las imágenes Context Broker, MongoDB y AuthZForce se descargan directamente de Docker-Hub.
 
 - Orion Context Broker - https://hub.docker.com/r/fiware/orion/
-- AuthZForce - https://hub.docker.com/r/fiware/authzforce/
+- AuthZForce - https://hub.docker.com/r/bitergia/authzforce/
 - MongoDB - [https://hub.docker.com/_/mongo/](https://hub.docker.com/_/mongo/)
 
 Las imágenes de la aplicación, del Pep Proxy y del IdM usados, se encuentran en el siguiente repositorio de DockerHub.
