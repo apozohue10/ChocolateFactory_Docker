@@ -1,6 +1,6 @@
 Chocolate Factory with Docker
 ==========
-[TOC]
+
 Introducción
 ---------------
 Este proyecto consiste en la implementación a través de Docker de una aplicación basada en la plataforma FIWARE. El código de la aplicación, así como su descripción , se puede encontrar en el siguiente enlace:
