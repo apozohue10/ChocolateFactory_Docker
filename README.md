@@ -97,6 +97,7 @@ Consideraciones
 Si al parar todos los contenedores arrancados mediante docker-compose se realiza un kill en vez de un stop o si algún contenedor no para de ejecutarse, es probable que no deje volver a arrancarlos. Para solucionar esto se problema, se paran todos los contenedores y se borran mediante los siguiente comandos:
 
 *docker stop $(docker ps -a -q)*
+
 *docker rm $(docker ps -a -q)*
 
 Si el problema sigue persistiendo, se deben borrar los volúmenes. Para ello vaya a la carpeta data en el directorio raiz y borre los directorios mongodb y authzforce.
