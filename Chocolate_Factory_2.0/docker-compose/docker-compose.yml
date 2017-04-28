@@ -1,0 +1,71 @@
+version: "3"
+
+networks:
+  factory:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24 
+
+volumes:
+  vol-idm:
+  vol-mongo:
+  vol-authzforce:
+
+services:
+  mongo:
+    image: mongo:3.2
+    volumes:
+      - vol-mongo:/data/db
+    command: --smallfiles --nojournal 
+    networks:
+      factory:
+        ipv4_address: 172.18.0.2
+
+  orion:
+    image: fiware/orion
+    links:
+      - mongo
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo
+    networks:
+      factory:
+        ipv4_address: 172.18.0.3
+
+  authzforce:
+    image: fiware/authzforce-ce-server:release-5.4.1
+    volumes:
+     - vol-authzforce:/opt/authzforce-ce-server/data/domains
+    ports:
+     - "8080:8080"
+    networks:
+     factory:
+        ipv4_address: 172.18.0.4
+
+  idm:
+    image: apozohue10/idm
+    volumes:
+     - vol-idm:/keystone
+    ports:
+     - "5000:5000"
+     - "8000:8000"
+    networks:
+      factory:
+        ipv4_address: 172.18.0.5
+
+  pepproxy:
+    image: apozohue10/pepproxy
+    ports:
+     - "8070:8070"
+    networks:
+      factory:
+        ipv4_address: 172.18.0.6
+
+  chocolatefactory:
+    image: apozohue10/factory
+    ports:
+     - "1028:1028"
+    networks:
+      factory:
+        ipv4_address: 172.18.0.7
+
