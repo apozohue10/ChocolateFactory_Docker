@@ -44,7 +44,7 @@ El código para crear estas tres imágenes se encuentra en la carpeta images. Lo
 
 Para el IdM, AuthZForce y MongoDB se crean una serie de volúmenes que permiten guardar de manera persistente ciertos datos como los usuarios, roles, dominios o entidades.
 
-Por otro lado, en la carpeta Docker-compose se encuentra un fichero llamado docker-compose.yml a través del cual se descargan las imágenes de los contenedores y los arranca automáticamente.
+Por otro lado, en la carpeta docker-compose se encuentra un fichero llamado docker-compose.yml a través del cual se descargan las imágenes de los contenedores y los arranca automáticamente.
 
 Requerimientos
 -------------------
@@ -60,28 +60,27 @@ Por otro lado también es necesario instalar Docker-Compose para orquestar todos
 
 https://docs.docker.com/compose/install/
 
-Se recomienda instalar Docker en Ubuntu 14.04, ya que tiene un manejo más sencillo.
+Se recomienda instalar Docker en Ubuntu 16.04, ya que tiene un manejo más sencillo.
 Por último se debe instalar git en el sistema. Para ello ejecutamos los siguientes comandos en el terminal de Ubuntu:
 
 *sudo apt-get update*
+
 *sudo apt-get install git*
 
 Ejecución
 ---------------------------
-Para ejecutar la aplicación hay que crear un fichero vació llamado keystone.db dentro de la dirección */data/idm*. De esta manera aunque se borre el contenedor del IdM su base de datos no se perderá, ya que estará almacenada en el host. Este paso es opcional, ya que si solo se quiere probar la aplicación no sería necesario generar este volumen. Si se ha decidido no generar el volumen, en el fichero docker-compose.yml habría que borrar las siguientes líneas:
-
-*volumes:*
-     *- /data/idm/keystone.db:/opt/idm/keystone/keystone.db*
-
-Una vez realizado el paso anterior, se descarga el código de GItHub mediante:
+Descargar el código de GItHub mediante:
 
 *git clone https://github.com/apozohue10/ChocolateFactory_Docker*
 
-Por último y dentro de la carpeta Docker-compose de los archivos descargados de GitHub, se ejecuta la siguiente orden:
+Dentro de la carpeta docker-compose de los archivos descargados de GitHub, se ejecuta la siguiente orden:
 
 *docker-compose up*
 
-Con esto se descargarán las imágenes de los contenedores, se arrancarán los contenedores y se configurarán automáticamente. En un navegador y a través de la dirección *localhost:1028* se podrá hacer uso de la aplicación. Los usuarios y contraseñas creados por defecto para la aplicación son los siguientes:
+Con esto se descargarán las imágenes de los contenedores, se arrancarán los contenedores y se configurarán automáticamente. 
+En un navegador y a través de la dirección *localhost:1028* se podrá hacer uso de la aplicación. 
+
+Los usuarios y contraseñas creados por defecto para la aplicación son los siguientes:
 
 Usuario     | Contraseña
 --------    | --------
@@ -96,11 +95,15 @@ Consideraciones
 -------------------
 Si al parar todos los contenedores arrancados mediante docker-compose se realiza un kill en vez de un stop o si algún contenedor no para de ejecutarse, es probable que no deje volver a arrancarlos. Para solucionar esto se problema, se paran todos los contenedores y se borran mediante los siguiente comandos:
 
-*docker stop $(docker ps -a -q)*
+*sudo docker-compose down*
 
-*docker rm $(docker ps -a -q)*
+Si el problema sigue persistiendo, se deben borrar los volúmenes. 
 
-Si el problema sigue persistiendo, se deben borrar los volúmenes. Para ello vaya a la carpeta data en el directorio raiz y borre los directorios mongodb y authzforce.
+*sudo docker volume rm vol-idm vol-mongo vol-authzforce*
+
+Para borrar la red creada se puede hacer de la siguiente manera:
+
+*sudo docker network rm 10_factory*
 
 Si se desea borrar todas las imágenes se puede realizar mediante el siguiente comando:
 

@@ -62,7 +62,7 @@ services:
         ipv4_address: 172.18.0.6
 
   chocolatefactory:
-    image: apozohue10/factory
+    image: apozohue10/chocolatefactory
     ports:
      - "1028:1028"
     networks:
