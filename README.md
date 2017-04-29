@@ -8,10 +8,10 @@ Este proyecto consiste en la implementación a través de Docker de una aplicaci
 https://github.com/dmartr/chocolatefactory
 
 Docker es una plataforma de código abierto, que permite automatizar el despliegue de
-aplicaciones gracias a la tecnología de los contenedores. Docker fue incluida recientemente como Generic Enabler en la plataforma de FIWARE.
+aplicaciones a través contenedores. Docker esta incluido como Generic Enabler en la plataforma de FIWARE.
 
-En esencia, con Docker se despliega un microservicio en un contenedor, el cual
-contiene todo lo necesario para ejecutarse dicho microservicio. Con Docker se alcanza un grado de portabilidad al que no puede llegar la virtualización.
+En esencia, con Docker se despliega cada microservicio en un contenedor, el cual
+contiene todo lo necesario para ejecutase dicho microservicio. 
 
 Se puede encontrar más información acerca de Docker en el siguiente enlace:
 
@@ -23,7 +23,7 @@ La arquitectura de la aplicación con los puertos que usa se puede ver en la sig
 
 ![enter image description here](https://lh3.googleusercontent.com/j6ynncFLWojmrqzLcaFxokq86ZXsNyZkvtRzQjv3u4KWUmgV74UYNFB4Hy1RH5fSi0rz=s0 "diagrama_general.png")
 
-Se observa que hay seis contenedores: Chocolate Factory, IdM, AuthZForce, Pep Proxy, Context Broker y MongoDB. 
+Hay seis contenedores: Chocolate Factory, IdM, AuthZForce, Pep Proxy, Context Broker y MongoDB. 
 
 La implementación a través de Docker se basa en dos partes:
 
@@ -33,18 +33,18 @@ La implementación a través de Docker se basa en dos partes:
 Las imágenes Context Broker, MongoDB y AuthZForce se descargan directamente de Docker-Hub.
 
 - Orion Context Broker - https://hub.docker.com/r/fiware/orion/
-- AuthZForce - https://hub.docker.com/r/bitergia/authzforce/
+- AuthZForce - https://hub.docker.com/r/fiware/authzforce-ce-server/
 - MongoDB - [https://hub.docker.com/_/mongo/](https://hub.docker.com/_/mongo/)
 
 Las imágenes de la aplicación, del Pep Proxy y del IdM usados, se encuentran en el siguiente repositorio de DockerHub.
 
 https://hub.docker.com/u/apozohue10/
 
-El código para crear estas tres imágenes se encuentra en la carpeta images. Los ficheros Dockerfile son la base para crear las imágenes. Los ficheros docker-entrypoint.sh y default_provision.py (en el caso del IdM) son ficheros de arranque y configuración de los contenedores escritos en Bash y Python respectivamente.
+El código para crear estas tres imágenes se encuentra en la carpeta images. Los ficheros Dockerfile son la base para crear las imágenes. Los ficheros docker-entrypoint.sh y default_provision.py (en el caso del IdM) son ficheros de arranque y configuración de los servicios en los contenedores.
 
-Para el IdM, AuthZForce y MongoDB se crean una serie de volúmenes que permiten guardar de manera persistente ciertos datos como los usuarios, roles, dominios o entidades.
+Para el IdM, AuthZForce y MongoDB se crean volúmenes loc cuales permiten guardar de manera persistente ciertos datos como los usuarios, roles, dominios o entidades.
 
-Por otro lado, en la carpeta docker-compose se encuentra un fichero llamado docker-compose.yml a través del cual se descargan las imágenes de los contenedores y los arranca automáticamente.
+Por último, en la carpeta docker-compose se encuentra un fichero llamado docker-compose.yml a través del cual se descargan las imágenes de los contenedores y los arranca automáticamente.
 
 Requerimientos
 -------------------
@@ -54,18 +54,11 @@ Para poder ejecutar la aplicación es necesario instalar Docker. Este se puede i
 - Windows - https://docs.docker.com/engine/installation/windows/
 - Mac OS - https://docs.docker.com/engine/installation/mac/
 
-Se ha puesto de ejemplo Ubuntu como SO en base Linux, pero se puede instalar en otros como CentOS o Debian. La instalación en Windows y Mac OS es algo más compleja ya que Docker se instala en una máquina virtual. Para ello se vale de Docker-Machine, Kitematic y Virtual Box.
-
-Por otro lado también es necesario instalar Docker-Compose para orquestar todos los contenedores. En el siguiente enlace se explica como instalar Docker:
+También es necesario instalar Docker-Compose para orquestar todos los contenedores. En el siguiente enlace se explica como instalar Docker:
 
 https://docs.docker.com/compose/install/
 
 Se recomienda instalar Docker en Ubuntu 16.04, ya que tiene un manejo más sencillo.
-Por último se debe instalar git en el sistema. Para ello ejecutamos los siguientes comandos en el terminal de Ubuntu:
-
-*sudo apt-get update*
-
-*sudo apt-get install git*
 
 Ejecución
 ---------------------------
@@ -75,7 +68,7 @@ Descargar el código de GItHub mediante:
 
 Dentro de la carpeta docker-compose de los archivos descargados de GitHub, se ejecuta la siguiente orden:
 
-*docker-compose up*
+*sudo docker-compose up*
 
 Con esto se descargarán las imágenes de los contenedores, se arrancarán los contenedores y se configurarán automáticamente. 
 En un navegador y a través de la dirección *localhost:1028* se podrá hacer uso de la aplicación. 
@@ -89,23 +82,20 @@ oompaloompaC@test.com    | oompaloompaC
 oompaloompaT@test.com     | oompaloompaT
 oompaloompaI@test.com     | oompaloompaI
 
-Si se paran y vuelven a arrancar, las configuraciones ya estan hechas y por tanto el tiempo en que tarda en arrancarse será menor.
 
 Consideraciones
 -------------------
-Si al parar todos los contenedores arrancados mediante docker-compose se realiza un kill en vez de un stop o si algún contenedor no para de ejecutarse, es probable que no deje volver a arrancarlos. Para solucionar esto se problema, se paran todos los contenedores y se borran mediante los siguiente comandos:
+Si al parar todos los contenedores arrancados mediante docker-compose se realiza un kill en vez de un stop o si algún contenedor no para de ejecutarse, es probable que no deje volver a arrancarlos. Para solucionar esto se problema, se paran todos los contenedores y se borran mediante el siguiente comando:
 
 *sudo docker-compose down*
+
+El comando anterior tambien borra la red con la que se conectan los contenedores entre si.
 
 Si el problema sigue persistiendo, se deben borrar los volúmenes. 
 
 *sudo docker volume rm vol-idm vol-mongo vol-authzforce*
 
-Para borrar la red creada se puede hacer de la siguiente manera:
-
-*sudo docker network rm 10_factory*
-
 Si se desea borrar todas las imágenes se puede realizar mediante el siguiente comando:
 
-docker rmi $(docker images -q)
+*sudo docker rmi apozohue10/chocolatefactory apozohue10/idm apozohue10/pepproxy mongo:3.2 fiware/orion fiware/authzforce-ce-server:release-5.4.1*
 
