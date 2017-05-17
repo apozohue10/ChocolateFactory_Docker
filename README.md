@@ -48,32 +48,33 @@ Por último, en la carpeta docker-compose se encuentra un fichero llamado docker
 
 Requerimientos
 -------------------
-Para poder ejecutar la aplicación es necesario instalar Docker. Este se puede instalar en Linux, Windows o Mac OS. En los siguientes enlaces se describe como realizar la instalación:
+Se necesita tener instalado en el host las herramientas Docker y Docker-compose, así como tener instalado Python.
+Docker se puede instalar en Linux, Windows o Mac OS. En los siguientes enlaces se describe como realizar la instalación:
 
 - Ubuntu - https://docs.docker.com/engine/installation/ubuntulinux/
 - Windows - https://docs.docker.com/engine/installation/windows/
 - Mac OS - https://docs.docker.com/engine/installation/mac/
 
-También es necesario instalar Docker-Compose para orquestar todos los contenedores. En el siguiente enlace se explica como instalar Docker:
+En el siguiente enlace se describe como instalar Docker-compose:
 
 https://docs.docker.com/compose/install/
 
-Se recomienda instalar Docker en Ubuntu 16.04, ya que tiene un manejo más sencillo.
 
 Ejecución
 ---------------------------
-Descargar el código de GItHub mediante:
+[1] Descargar el código de GItHub mediante:
 
 *git clone https://github.com/apozohue10/ChocolateFactory_Docker*
 
-Dentro de la carpeta docker-compose de los archivos descargados de GitHub, se ejecuta la siguiente orden:
+[2] Acceder al directorio donde estan los ficheros descargados y se arranca la aplicación:
 
-*sudo docker-compose up*
+*cd Chocolate_Factory_3.0*
+*python chocolate_factory.py start*
 
 Con esto se descargarán las imágenes de los contenedores, se arrancarán los contenedores y se configurarán automáticamente. 
-En un navegador y a través de la dirección *localhost:1028* se podrá hacer uso de la aplicación. 
+[3] En un navegador y a través de la dirección *localhost:1028* se podrá hacer uso de la aplicación. 
 
-Los usuarios y contraseñas creados por defecto para la aplicación son los siguientes:
+[4] Al pulsar el botón de Log In, se accede al portal de IdM. Los usuarios y contraseñas creados por defecto para la aplicación son los siguientes:
 
 Usuario     | Contraseña
 --------    | --------
@@ -81,21 +82,37 @@ willywonka@test.com | willywonka
 oompaloompaC@test.com    | oompaloompaC
 oompaloompaT@test.com     | oompaloompaT
 oompaloompaI@test.com     | oompaloompaI
+securityGuard@test.com     | securityGuard
 
+[5] Una vez accedido, se redirige a una página en función del rol de cada usuario y se presentan los valores de los sensores.
+
+Cuando se accede a través del portal de IDM se quedan almacenadas cookies en el navegador, por lo que para poder acceder mediante otro usuario distinto es necesario cerrar el navegador o borrar las cookies generadas.
 
 Consideraciones
 -------------------
-Si al parar todos los contenedores arrancados mediante docker-compose se realiza un kill en vez de un stop o si algún contenedor no para de ejecutarse, es probable que no deje volver a arrancarlos. Para solucionar esto se problema, se paran todos los contenedores y se borran mediante el siguiente comando:
+Para parar la aplicación se ejecuta el siguiente comando:
 
-*sudo docker-compose down*
+*python chocolate_factory.py stop*
 
-El comando anterior tambien borra la red con la que se conectan los contenedores entre si.
+Para borrar los contenedores y las redes generadas:
 
-Si el problema sigue persistiendo, se deben borrar los volúmenes. 
+*python chocolate_factory.py remove-containers*
 
-*sudo docker volume rm vol-idm vol-mongo vol-authzforce*
+Para borrar los volumenes generados:
+
+*python chocolate_factory.py remove-volumes*
+
+Se pueden ver los logs de todos los contenedores ejecutando:
+
+*python chocolate_factory.py logs*
+
+O ver los logs individuales de cada uno de ellos con:
+
+*python chocolate_factory.py logs nombre_contendor*
+
+Sustituyendo nombre_contenedor por: orion, mongo, idm, pepproxy, authzforce o chocolatefactory.
 
 Si se desea borrar todas las imágenes se puede realizar mediante el siguiente comando:
 
-*sudo docker rmi apozohue10/chocolatefactory apozohue10/idm apozohue10/pepproxy mongo:3.2 fiware/orion fiware/authzforce-ce-server:release-5.4.1*
+*sudo docker rmi apozohue10/sensor apozohue10/chocolatefactory apozohue10/idm apozohue10/pepproxy mongo:3.2 fiware/orion fiware/authzforce-ce-server:release-5.4.1*
 
