@@ -21,7 +21,7 @@ Descripción
 --------------
 La arquitectura de la aplicación con los puertos que usa se puede ver en la siguiente imagen:
 
-![enter image description here](Chocolate_Factory_3.0/diagrams/Current_Architecture?raw=true "diagrama_general.png")
+![Architecture](Chocolate_Factory_3.0/diagrams/Current_Architecture.png?raw=true "diagrama_general.png")
 
 Hay seis contenedores: Chocolate Factory, IdM, AuthZForce, Pep Proxy, Context Broker y MongoDB. 
 
