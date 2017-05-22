@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" href="fontawesome/css/font-awesome.min.css">
+    <link href="stylesheets/styles.css" rel="stylesheet">
+    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="d3/d3.layout.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client/script.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+  </head>
+  <body>
+    <div id="body" class="roommap"></div> 
+    <script type="text/javascript">
+      var socket = io();
+      var ChData = {}; var EnData = {}; var InData = {}; var WiData = {}; var ElData = {}; var TvData = {};
+
+      socket.on('updateCR', function(data){ ChData = data; });
+      socket.on('updateTR', function(data){ TvData = data; });
+      socket.on('updateHall', function(data){ EnData = data;});
+      socket.on('updateOffice', function(data){ WiData = data;});
+      socket.on('updateElevator', function(data){ ElData = data;});
+      socket.on('updateIR', function(data){ InData = data;});
+
+      //VARIABLS GLOBALES
+      var kx, ky, svg, w, h, x, y, root, node;
+      var zoomeado = false;
+   
+      function scaleRadio(bigArea,smallArea){
+        var theRatio= bigArea/smallArea;
+        var result = 40/theRatio;
+        result = result<5?5:result;
+        return (result+"%");
+      }
+
+      function shouldDisplay(sizeX){
+        if (sizeX<200){
+          return "none";
+        }
+          return "block";
+      }
+
+      function scaleText(bigArea,smallArea){
+        var result = 3.2+(80*bigArea/(1280*800));
+        result=result>16?16:result;
+        return (result+"px");
+      }
+
+      //FUNCIOn ONRESIZE
+      window.onresize=function(){
+        removeall();
+        start();
+      };
+
+
+      start();
+
+      function removeall(){
+        var svg2 = d3.select(".chart");
+        svg2.remove();
+      }
+
+    function start(){
+      
+      var marginw = 0;
+      w = window.innerWidth-marginw;
+      h = window.innerHeight;
+      console.log("w", w, "h",h, "ratio", (w/h));
+      if ((w/h)<1.38){
+        h=w/1.38;
+        console.log("CAMBIO w", w, "h",h, "ratio", (w/h));
+
+      }else if ((w/h)>3.1){
+        w=h*3.1;
+        console.log("CAMBIO w", w, "h",h, "ratio", (w/h));
+
+      }
+      x = d3.scale.linear().range([0, w]);
+      y = d3.scale.linear().range([0, h]);
+      //color = d3.scale.category10(),
+
+      var treemap = d3.layout.treemap()
+        .round(false)
+        .size([w, h])
+        .sticky(true)
+        .value(function(d) { return d.size; });
+
+      svg = d3.select("#body").append("div")
+        .attr("class", "chart")
+        .style("width", "100%")
+        .style("height", "100%")
+      .append("svg:svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+      .append("svg:g")
+        .attr("transform", "translate(.5,.5)");
+
+      d3.json("flare.json", function(data) {
+        node = root = data;
+
+        var nodes = treemap.nodes(root)
+            .filter(function(d) { return !d.children; });
+
+        var cell = svg.selectAll("g")
+            .data(nodes)
+          .enter().append("svg:g")
+            .attr("class", "cell")
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            //.attr("transform", function(d) { return "translate(" + (d.x*100)/w + "%," + (d.y*100)/h + "%)"; })
+
+            .on("click", function(d) { return zoom(node == d.parent ? root : d.parent); });
+
+        cell.append("svg:rect")
+            .attr("width", function(d) { return d.dx - 1; })
+            .attr("height", function(d) { return d.dy - 1; })
+            .style("fill", function(d) { return "#c3578d"; });
+
+
+        cell.append("svg:text")
+            .attr("x", function(d) { return 15; })
+            .attr("y", function(d) { return d.dy - 20; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", "left")
+            .text(function(d) { return d.name; })
+            .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; })
+            .style("font-size", function(d){return scaleText(w*h,d.dx*d.dy);})
+            .style("font-weight", "200")
+            .style("display", function(d){return shouldDisplay(d.dx)})
+            .style("fill", "white");
+
+        cell.append("svg:circle")
+          .attr("class", "c1")
+          .attr("cx", function(d) { return d.dx / 2; })
+          .attr("cy", function(d) { return d.dy / 2; })
+          .attr("r", function(d){return scaleRadio(w*h,d.dx*d.dy);})
+          .style("opacity", "0.8")
+          .style("box-shadow", "0 1px 0 #000")
+          .style("fill", function(d) { return "#fff"; });
+
+        cell.append("svg:text")
+          .attr("class","people")
+          .attr("id",function(d){ return d.id; })
+          .attr("x", function(d) { return d.dx / 2 ; })
+          .attr("y", function(d) { return d.dy / 2 ; })
+          .attr("dy", ".35em")
+          .attr("text-anchor", "middle")
+          .text("-")
+          .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; })
+          .style("font-size", "30px")
+          .style("font-weight", "800")
+          .style("fill", "#c3578d");
+
+        cell.append("svg:g")
+          .attr("class","graph")
+          .attr("transform", function(d) { return "translate("+(d.dx - 60)+","+  20 +")"; });
+
+        var graph = svg.selectAll(".graph");
+
+        d3.select("select").on("change", function() {
+          treemap.value(this.value == "size" ? size : count).nodes(root);
+          zoom(node);
+        });
+      });
+
+    }
+
+
+    function size(d) {
+      return d.size;
+    }
+
+    function count(d) {
+      return 1;
+    }
+
+    function zoom(d) {
+      if(!svg){
+        return;
+      }
+      console.log("",d);
+      zoomeado = !zoomeado;
+      kx = w / d.dx;
+      ky = h / d.dy;
+      x.domain([d.x, d.x + d.dx]);
+      y.domain([d.y, d.y + d.dy]);
+
+
+      var t = svg.selectAll("g.cell").transition()
+          .duration(d3.event.altKey ? 7500 : 750)
+          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+      t.select("rect")
+          .attr("width", function(d) { return kx * d.dx - 1; })
+          .attr("height", function(d) { return ky * d.dy - 1; })
+
+      t.select("text")
+          .attr("x", function(d) { return 15; })
+          .attr("y", function(d) { return ky * d.dy - 20; })
+          .style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
+
+      //--------------------------------------
+      //        SI ZOOM APLICADO
+      //--------------------------------------
+
+      if (zoomeado){
+
+        var t2 = svg.selectAll(".graph").transition()
+          .duration(d3.event.altKey ? 7500 : 750)
+          .attr("transform", function(d) { return "translate(" + (kx*(d.dx) - 90) + "," + 50 + ")"; });
+
+        t.select("circle")
+          .attr("cx", function(d) { return kx * d.dx / 2; })
+          .attr("cy", function(d) { return ky * d.dy / 2; })
+          .attr("r", "15%" )
+          .style("box-shadow", "0 1px 0 #000")
+          .style("fill", function(d) { return "#ffe"; });
+
+
+        t.select("text.people")
+          .attr("x", function(d) { return kx * d.dx / 2; })
+          .attr("y", function(d) { return ky * d.dy / 2; })
+          .style("font-size","60px");
+
+        t.select("text")
+          .attr("x", function(d) { return 30; })
+          .attr("y", function(d) { return (ky * d.dy)-30 ; })
+          .style("font-size","30px")
+          .style("display", function(d){return shouldDisplay(kx*d.dx)});
+
+      //--------------------------------------
+      //        SI ZOOM NO APLICADO
+      //--------------------------------------
+        }else{
+          var t2 = svg.selectAll(".graph").transition()
+            .duration(d3.event.altKey ? 7500 : 750)
+            .attr("transform", function(d) { return "translate("+(d.dx - 60)+","+  20 +")"; });
+
+          t.select("circle")
+            .attr("cx", function(d) { return kx * d.dx / 2; })
+            .attr("cy", function(d) { return ky * d.dy / 2; })
+            .attr("r", function(d) {
+        return scaleRadio(w*h,d.dx*d.dy); })
+            .style("box-shadow", "0 1px 0 #000")
+            .style("fill", function(d) { return "#fff"; });
+
+
+          t.select("text.people")
+            .attr("x", function(d) { return kx * d.dx / 2; })
+            .attr("y", function(d) { return ky * d.dy / 2; })
+            .style("font-size","30px");
+
+          t.select("text")
+            .attr("x", function(d) { return 30; })
+            .attr("y", function(d) { return d.dy - 20; })
+            .style("font-size",function(d){return scaleText(w*h,7)})
+            .style("display",function(d){return shouldDisplay(d.dx)});
+        }
+        node = d;
+        d3.event.stopPropagation();
+    }
+
+    var interval = setInterval(function(){
+      var zona = function(d) { return d.name; };
+
+
+      //COLORES DE FONDO EN TIEMPO REAL
+      //---------------------------------
+      var t = svg.selectAll('g.cell');
+      var colores =["#578dc3"]; 
+
+      t.select("rect")
+        .style("fill", function(d) {
+          return colores[0];
+        });
+        
+       $("#en").html(occupationValue(EnData));
+       $("#tv").html(occupationValue(TvData));
+       $("#ch").html(occupationValue(ChData));
+       $("#wi").html(occupationValue(WiData));
+       $("#el").html(occupationValue(ElData));
+       $("#in").html(occupationValue(InData));
+        var t2 = svg.selectAll(".graph");
+    },200);
+
+    function occupationValue(data) {
+      for (i=0; i < data.attributes.length; i++) {
+        if (data.attributes[i].name == "Occupation") {
+          return data.attributes[i].value;
+        }
+      } 
+    }
+
+    </script>
+  </body>
+</html>
