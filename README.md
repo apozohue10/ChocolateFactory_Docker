@@ -21,7 +21,7 @@ Descripción
 --------------
 La arquitectura de la aplicación con los puertos que usa se puede ver en la siguiente imagen:
 
-![enter image description here](https://lh3.googleusercontent.com/j6ynncFLWojmrqzLcaFxokq86ZXsNyZkvtRzQjv3u4KWUmgV74UYNFB4Hy1RH5fSi0rz=s0 "diagrama_general.png")
+![enter image description here](ChocolateFactory_Docker/Chocolate_Factory_3.0/diagrams/Current_Architecture?raw=true "diagrama_general.png")
 
 Hay seis contenedores: Chocolate Factory, IdM, AuthZForce, Pep Proxy, Context Broker y MongoDB. 
 
@@ -48,7 +48,7 @@ Por último, en la carpeta docker-compose se encuentra un fichero llamado docker
 
 Requerimientos
 -------------------
-Se necesita tener instalado en el host las herramientas Docker y Docker-compose, así como tener instalado Python.
+Se necesita tener instalado en el host las herramientas Docker(1.17) y Docker-compose(1.12), así como tener instalado Python(2.7).
 Docker se puede instalar en Linux, Windows o Mac OS. En los siguientes enlaces se describe como realizar la instalación:
 
 - Ubuntu - https://docs.docker.com/engine/installation/ubuntulinux/
@@ -68,7 +68,7 @@ Ejecución
 
 [2] Acceder al directorio donde estan los ficheros descargados y se arranca la aplicación:
 
-*cd Chocolate_Factory_3.0*
+*cd ChocolateFactory_Docker/Chocolate_Factory_3.0*
 *python chocolate_factory.py start*
 
 Con esto se descargarán las imágenes de los contenedores, se arrancarán los contenedores y se configurarán automáticamente. 
