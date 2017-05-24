@@ -38,7 +38,7 @@ function _data_provision () {
 # See if access to Authzforce information is available
 function conex_auth () {
   while
-    CONEXAUTH=`curl --write-out %{http_code} --silent --output /dev/null http://authzforce:8000`
+    CONEXAUTH=`curl --write-out %{http_code} --silent --output /dev/null http://authzforce:8080`
     sleep 4  
     (( $CONEXAUTH != 200 ))
   do :; done
