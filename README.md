@@ -119,6 +119,7 @@ Running
 [2] Access folder and run the application:
 
 *cd ChocolateFactory_Docker/Chocolate_Factory_3.0*
+
 *python chocolate_factory.py start*
 
 [3] Access *localhost:1028* in a browser.
