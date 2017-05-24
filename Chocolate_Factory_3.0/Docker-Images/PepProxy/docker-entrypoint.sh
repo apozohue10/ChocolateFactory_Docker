@@ -6,7 +6,7 @@
 # See if access to idm information is available
 function conex_idm () {
   while
-    CONEXIDM=`curl --write-out %{http_code} --silent --output /dev/null http://idm:8080`
+    CONEXIDM=`curl --write-out %{http_code} --silent --output /dev/null http://idm:8000`
     sleep 4
     (( $CONEXIDM != 200 )) 
   do :; done
@@ -15,7 +15,7 @@ function conex_idm () {
 # See if access to Authzforce information is available
 function conex_auth () {
   while
-    CONEXAUTH=`curl --write-out %{http_code} --silent --output /dev/null http://authzforce:8000`
+    CONEXAUTH=`curl --write-out %{http_code} --silent --output /dev/null http://authzforce:8080`
     sleep 4  
     (( $CONEXAUTH != 200 ))
   do :; done
