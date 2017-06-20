@@ -1,3 +1,16 @@
+# Script which will run when deploying IdM container to:
+#   - Create Users
+#   - Create Roles
+#   - Create Permissions
+#   - Assign Permissions to Roles
+#   - Assign Roles to users
+#   - Create Domain in Authzforce
+#   - Create Policies in Authzforce
+#   - Register Sensors
+#
+# Author: Alejandro Pozo Huertas
+# Project: TFM for ETSIT-UPM
+
 import os
 import requests
 import uuid
@@ -6,7 +19,7 @@ from string import Template
 from keystoneclient.v3 import client
 from xml.etree import ElementTree
 
-
+# Create session to perform requests to IdM
 def client_keystone():
     keystone_path='./keystone/'
     endpoint = 'http://{ip}:{port}/v3'.format(ip='127.0.0.1',
@@ -19,10 +32,8 @@ def client_keystone():
     
     return keystone
 
-
+# Get or create a domain for Application
 def get_application_domain(keystone,application):
-    """Checks if application has an associated domain in AC. If not, it creates it.
-    """
 
     if not application.extra.has_key('ac_domain'):
         print('Create domain')
@@ -32,6 +43,7 @@ def get_application_domain(keystone,application):
             'app_name': application.name
         }
 
+        # Inser values of var context in domain template
         file = open('templates/domain.xacml')
         xml = Template(file.read()).substitute(context)
         
@@ -43,7 +55,7 @@ def get_application_domain(keystone,application):
 
         url = 'http://authzforce:8080/authzforce-ce/domains'
 
-
+        # Send request to create domain
         response = requests.post(
             url,
             data=xml,
@@ -56,6 +68,7 @@ def get_application_domain(keystone,application):
 
         print('Domain created: ' + domain_id)
 
+        # Update application attributes with the domain id
         application_update = keystone.oauth2.consumers.update( 
             consumer=application.id, 
             redirect_uris=application.redirect_uris,
@@ -66,10 +79,9 @@ def get_application_domain(keystone,application):
     print('Authzforce Domain for application ' + application_update.id + ': ' + application_update.extra['ac_domain'])
     return application_update.extra['ac_domain']
 
+# Create policies for the domain
 def policyset_update(keystone, application):
-    """Gets all role's permissions and generates a xacml file to
-    update the Access Control.
-    """
+
 
     app_id = application.id
     policy_id = str(uuid.uuid4())
@@ -111,7 +123,7 @@ def policyset_update(keystone, application):
         xml = xml + '</Policy>' + '\n'
     xml = xml + '</PolicySet>'
 
-    # Send request creating policies
+    # Send request to create policies
     headers = {
         'content-type': 'application/xml',
         'X-Auth-Token': 'undefined'
@@ -153,6 +165,7 @@ def policyset_update(keystone, application):
 
     print('Response code from activated policy: ' + str(response.status_code))
 
+# Return a dictionary with role ID as Key and Permissions in an Array as Value
 def obtain_map_permissions(keystone,applicationId):
     role_permissions = {}
     roles_chocolate = [
@@ -160,7 +173,7 @@ def obtain_map_permissions(keystone,applicationId):
             application_id=applicationId)
         if role.is_internal == False
     ]
-# MIRAR LO DE application_id para los permisos que se crean
+
     for role in roles_chocolate:
         public_permissions = [
             perm for perm in keystone.fiware_roles.permissions.list(
@@ -172,7 +185,7 @@ def obtain_map_permissions(keystone,applicationId):
 
     return role_permissions
 
-# Registrar usuarios
+# Register users 
 def _register_user(keystone, name, password, activate=True):
     email = name + '@test.com'
     user = keystone.user_registration.users.register_user(
@@ -186,6 +199,7 @@ def _register_user(keystone, name, password, activate=True):
             activation_key=user.activation_key)
     return user
 
+# Create all elements needed for the applicacion
 def test_data():
 
     keystone = client_keystone()
@@ -212,20 +226,25 @@ def test_data():
         client_type='confidential',
         grant_type='authorization_code')
 
-    # print(chocolateFactory_app)
-    # domain = get_application_domain(keystone,chocolateFactory_app)
-    # print(domain)
 
-    # Register pepProxy user
+    # Register pepProxy user for App
     print('Register pepProxy user')
-    pep_user = keystone.users.create(name='pepProxy', password='pepProxy', domain='default')
+    pep_app = keystone.users.create(name='pepProxyApp', password='pepProxyApp', domain='default')
 
     role_service = keystone.roles.create(
         name='service')
 
     keystone.roles.grant(
         role=role_service,
-        user=pep_user,
+        user=pep_app,
+        domain='default')
+
+    # Register pepProxy user for Sensors
+    pep_sensors = keystone.users.create(name='pepProxySensors', password='pepProxySensors', domain='default')
+
+    keystone.roles.grant(
+        role=role_service,
+        user=pep_sensors,
         domain='default')
 
     # Create roles for the Chocolate Factory
@@ -253,7 +272,7 @@ def test_data():
 
     # Adding permissions to roles
 
-    # Adding permissions to Factory Owner
+    # Add or create permissions to Factory Owner
     print('Create permissions for the Factory Owner')
 
     perm_app = keystone.fiware_roles.permissions.find(
@@ -283,69 +302,89 @@ def test_data():
     keystone.fiware_roles.permissions.add_to_role(
                     role_factoryOwner, perm_pubrolassign)
 
-    perm_menu = keystone.fiware_roles.permissions.create(
-                name='admin-menu', 
+    perm_map = keystone.fiware_roles.permissions.create(
+                name='admin-map', 
                 application=chocolateFactory_app, 
-                action= 'GET', 
-                resource= 'admin-menu')
+                action= 'POST', 
+                resource= 'Admin Room')
     keystone.fiware_roles.permissions.add_to_role(
-                    role_factoryOwner, perm_menu)
+                    role_factoryOwner, perm_map)
 
     perm_map = keystone.fiware_roles.permissions.create(
                 name='admin-map', 
                 application=chocolateFactory_app, 
-                action= 'GET', 
-                resource= 'admin-map')
+                action= 'POST', 
+                resource= 'Admin Map')
     keystone.fiware_roles.permissions.add_to_role(
                     role_factoryOwner, perm_map)
-
-    perm_rooms = keystone.fiware_roles.permissions.create(
-                name='admin-rooms', 
-                application=chocolateFactory_app, 
-                action= 'GET', 
-                resource= 'admin-rooms')
-    keystone.fiware_roles.permissions.add_to_role(
-                    role_factoryOwner, perm_rooms)
-
-
-    # Create permissions for Oompa Loompa Chocolate Room
-    print('Create permissions for Oompa Loompa Chocolate Room')
 
     perm_choc = keystone.fiware_roles.permissions.create(
                 name='chocolateroom', 
                 application=chocolateFactory_app, 
-                action= 'GET', 
-                resource= 'chocolateroom')
+                action= 'POST', 
+                resource= 'Chocolate Room')
     keystone.fiware_roles.permissions.add_to_role(
-                    role_chocolateRoom, perm_choc)
-
-    # Create permissions for Oompa Loompa Inventing Room
-    print('Create permissions for Oompa Loompa Inventing Room')
+                    role_factoryOwner, perm_choc)
 
     perm_inv = keystone.fiware_roles.permissions.create(
                 name='inventingroom', 
                 application=chocolateFactory_app, 
-                action= 'GET', 
-                resource= 'inventingroom')
+                action= 'POST', 
+                resource= 'Inventing Room')
     keystone.fiware_roles.permissions.add_to_role(
-                    role_inventingRoom, perm_inv)
-
-    # Create permissions for Oompa Loompa Television Room
-    print('Create permissions for Oompa Loompa Television Room')
+                    role_factoryOwner, perm_inv)
 
     perm_tv = keystone.fiware_roles.permissions.create(
                 name='televisionroom', 
                 application=chocolateFactory_app, 
-                action= 'GET', 
-                resource= 'televisionroom')
+                action= 'POST', 
+                resource= 'Television Room')
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_factoryOwner, perm_tv)
+
+    perm_unsubs = keystone.fiware_roles.permissions.create(
+                name='Unsubscribe', 
+                application=chocolateFactory_app, 
+                action= 'PATCH', 
+                resource= 'Unsubscribe')
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_factoryOwner, perm_unsubs)
+
+    # Add permissions for Oompa Loompa Chocolate Room
+    print('Create permissions for Oompa Loompa Chocolate Room')
+
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_chocolateRoom, perm_choc)
+
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_chocolateRoom, perm_unsubs)
+
+    # Add permissions for Oompa Loompa Inventing Room
+    print('Create permissions for Oompa Loompa Inventing Room')
+
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_inventingRoom, perm_inv)
+
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_inventingRoom, perm_unsubs)
+
+    # Add permissions for Oompa Loompa Television Room
+    print('Create permissions for Oompa Loompa Television Room')
+
     keystone.fiware_roles.permissions.add_to_role(
                     role_televisionRoom, perm_tv)
 
-    # Create permissions for Security Guard
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_televisionRoom, perm_unsubs)
+
+    # Add permissions for Security Guard
     print('Create permissions for Security Guard')
 
     keystone.fiware_roles.permissions.add_to_role(
                     role_securityGuard, perm_map)
+
+    keystone.fiware_roles.permissions.add_to_role(
+                    role_securityGuard, perm_unsubs)
 
     # Assign roles to users
     print('Assign roles to users')
@@ -380,6 +419,36 @@ def test_data():
         application=chocolateFactory_app.id,
         organization=users[4].default_project_id)
 
+    # Create IoT Sensors
+
+    # IoT group
+
+    print('Creating IoT Sensors group')
+    iot_group = keystone.groups.create(name='chocolate_factory_sensors_group', domain='default')
+
+    print('Creating IoT Sensors role')
+    iot_role = keystone.roles.create(name='chocolate_factory_role', domain='default')
+
+    print('Register IoT Sensors')
+
+    # Array with the usernames to register Sensors
+    sensors = [
+            'Chocolate_Temperature', 'Chocolate_Pressure', 'Chocolate_Occupation', 'Chocolate_River', 'Chocolate_Waterfall',
+            'Inventing_Temperature', 'Inventing_Pressure', 'Inventing_Occupation', 'Inventing_Experimental', 'Inventing_Experiments',
+            'Television_Temperature', 'Television_Pressure', 'Television_Occupation', 'Television_Power', 'Television_TVs',
+            'Big_Temperature', 'Big_Pressure', 'Big_Occupation',
+            'Willy_Temperature', 'Willy_Pressure', 'Willy_Occupation',
+            'Elevator_Temperature', 'Elevator_Pressure', 'Elevator_Occupation', 'Elevator_Floor'
+            ]
+
+    for sensor in sensors:
+        username =  sensor
+        password = sensor
+        sensor = keystone.users.create(name=username, password=password, domain='default')
+        keystone.roles.grant(iot_role, group=iot_group, domain='default')
+        keystone.users.add_to_group(user=sensor, group=iot_group)
+
+    # Create Domain
     policyset_update(keystone,chocolateFactory_app)
 
 test_data()

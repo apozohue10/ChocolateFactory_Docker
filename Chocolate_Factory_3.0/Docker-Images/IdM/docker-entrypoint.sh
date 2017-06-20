@@ -1,41 +1,43 @@
 #!/bin/bash
 
-# Author: Alejandro Pozo Huertas
 # Entrypoint for IDM in chocolate factory application
+# Author: Alejandro Pozo Huertas
+# Project: TFM for ETSIT-UPM
+
 
 # Get ip of the chocolate factory
 function ip_app () {
 
-  echo "---Ips de app---"
+  echo "---IP de app---"
   VARIPAPP=`ping -c 1 chocolatefactory | grep -m 1 "" | cut -d "(" -f2 | cut -d ")" -f1`
   echo "$VARIPAPP"
   export VARIPAPP
 
 }
 
-# Provide consumer, users and roles to the application
+# Provide consumer, users, roles, permissions, domains, policies and IoT sensors registration to the application
 function _data_provision () {
-        echo "---Database---"
-        VARTAM=`du /keystone/keystone.db`
-        arrayTam=$(echo $VARTAM | tr "  " "\n")
+  echo "---Database---"
+  VARTAM=`du /keystone/keystone.db`
+  arrayTam=$(echo $VARTAM | tr "  " "\n")
 
-        VARPAS="true"
-        for x in $arrayTam
-        do
-           if [ $VARPAS == "true" ]; then
-              VARNS=$x
-              VARPAS="false"
-           fi
-        done
+  VARPAS="true"
+  for x in $arrayTam
+  do
+     if [ $VARPAS == "true" ]; then
+        VARNS=$x
+        VARPAS="false"
+     fi
+  done
 
-        if [ -e /keystone/keystone.db ] && [  $VARNS -gt 112 ]; then
-           echo "---Provision has been done already---"
-        else
-           python default_provision.py
-        fi
+  if [ -e /keystone/keystone.db ] && [  $VARNS -gt 112 ]; then
+     echo "---Provision has been done already---"
+  else
+     python default_provision.py
+  fi
 }
 
-# See if access to Authzforce information is available
+# See if Authzforce is deployed
 function conex_auth () {
   while
     CONEXAUTH=`curl --write-out %{http_code} --silent --output /dev/null http://authzforce:8080`
@@ -47,6 +49,7 @@ function conex_auth () {
 # Run Keystone and Horizon
 conex_auth
 ip_app
+
 
 echo "---Run Keystone---"
 ./tools/with_venv.sh bin/keystone-all ${KEYSTONE_VERBOSE_LOG} >> /var/log/keystone.log 2>&1 &

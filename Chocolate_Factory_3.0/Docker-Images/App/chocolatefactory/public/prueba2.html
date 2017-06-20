@@ -3,20 +3,18 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" href="fontawesome/css/font-awesome.min.css">
-    <link href="stylesheets/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="stylesheets/stylesRoomsMap.css" rel="stylesheet">
     <script type="text/javascript" src="d3/d3.js"></script>
     <script type="text/javascript" src="d3/d3.layout.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="client/script.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
   </head>
   <body>
     <div id="body" class="roommap"></div> 
+    <div class = "row" style="height:80%;">
     <script type="text/javascript">
-      var socket = io();
       var OccData;
-
-      socket.on('updateAR', function(data){ OccData = data; });
 
 
       //VARIABLS GLOBALES
@@ -269,33 +267,21 @@
         .style("fill", function(d) {
           return colores[0];
         });
-      switch(OccData.id) {
-        case "Chocolate_Room":
-            $("#ch").html(OccData.Occupation.value);
-            break;
-        case "Inventing_Room":
-            $("#in").html(OccData.Occupation.value);
-            break;
-        case "Television_Room":
-            $("#tv").html(OccData.Occupation.value);
-            break;
-        case "Big_hall":
-            $("#en").html(OccData.Occupation.value);
-            break;
-        case "Willy_wonka_office":
-            $("#wi").html(OccData.Occupation.value);
-            break;
-        case "Elevator":
-            $("#el").html(OccData.Occupation.value);
-            break;
-      }   
+      
+      $("#en").html(5);
+       $("#tv").html(5);
+       $("#ch").html(5);
+       $("#wi").html(5);
+       $("#el").html(5);
+       $("#in").html(5);
        
       var t2 = svg.selectAll(".graph");
     },200);
 
 
     </script>
-    <div>
+    </div>
+    <div class = "row">
       <a href="/back"> <button class="btn btn-lg btn-primary btn-block">Go back</button></a>
     </div>
   </body>

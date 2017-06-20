@@ -61,166 +61,215 @@
 	        gauges[name] = new Gauge(name + "GaugeContainer", config);
       	}
 
+        function createGauges() {
+          createGauge("tempCho", "ºc", 0, 40);
+          createGauge("presCho", "mmhg", 0, 2000);
+          createGauge("tempInv", "ºc", 0, 40);
+          createGauge("presInv", "mmhg", 0, 2000);
+          createGauge("tempTv", "ºc", 0, 40);
+          createGauge("presTv", "mmhg", 0, 2000);
+          createGauge("tempEl", "ºc", 0, 40);
+          createGauge("presEl", "mmhg", 0, 2000);
+          createGauge("tempWw", "ºc", 0, 40);
+          createGauge("presWw", "mmhg", 0, 2000);
+          createGauge("tempBh", "ºc", 0, 40);
+          createGauge("presBh", "mmhg", 0, 2000);
+          createGauge("power", "kw", 0, 15000);
+          createGauge("gum", "cm2", 0, 50);
+          createGauge("water", "kmh", 0, 70);
+          createGauge("tv", "nº", 0, 50);
+          createGauge("vol", "ºc/atm", 0, 500);
+          createGauge("floor", "floor", 0, 20);
+        }
 
-      	function createGauges() {
-        	createGauge("temp", "ºc", 0, 40);
-	        createGauge("pres", "mmhg", 0, 2000);
-	        createGauge("power", "kw", 0, 15000);
-	        createGauge("gum", "cm2", 0, 50);
-	        createGauge("water", "kmh", 0, 70);
-	        createGauge("tv", "nº", 0, 50);
-	        createGauge("vol", "ºc/atm", 0, 500);
-      	}
 
-        socket.on('updateCR', function (data) {
-        	var tempAttr;
-         	var pressAttr;
-         	var rivAttr;
-         	var watAttr;
-          	for (i=0; i < data.attributes.length; i++) {
-          		switch (data.attributes[i].name) {
-          			case "Temperature":
-          				var tempAttr = data.attributes[i];
-          				break;
-          			case "Pressure":
-          				var pressAttr = data.attributes[i];
-          				break; 
-          			case "River level":
-          				var rivAttr = data.attributes[i];
-          				break;
-          			case "Waterfall speed":
-          				var watAttr = data.attributes[i];
-          				break;
-          		}
-          	} 
-          	var tempIcon= '<span id="tempGaugeContainer"></span>';
-          	var presIcon= '<span id="presGaugeContainer"></span>';
-          	var rivIcon= '<svg id="fillgauge3" width="80%" height="200"></svg>';
-          	var watIcon= '<span id="waterGaugeContainer"></span>';
-	        createGauges();
-	        $("#name").html(data.id);
-	        $('#natt1').html(tempAttr.name);
-	        $('#natt2').html(pressAttr.name);
-	        $('#natt3').html(rivAttr.name);
-	        $('#natt4').html(watAttr.name);
-	        $('#att1').html(tempIcon);
-	        $('#att2').html(presIcon);
-	        $('#att3').html(rivIcon);
-	        $('#att4').html(watIcon);
-	        loadLiquidFillGauge("fillgauge3", rivAttr.value, config2);
-	        gauges["temp"].render();
-	        gauges["pres"].render();
-	        gauges["water"].render();
-	        gauges["temp"].redraw(Math.round(tempAttr.value * 100) / 100);
-        	gauges["pres"].redraw(Math.round(pressAttr.value * 100) / 100);
-          	gauges["water"].redraw(Math.round(watAttr.value * 100) / 100); 
+        socket.on('updateARA', function (data) {
+
+          console.log("esoeseso")
+          console.log(data)
+
+          switch(data.id) {
+            case "Chocolate_Room":
+                var tempAttr = data.Temperature.value;
+                var pressAttr = data.Pressure.value;
+                var rivAttr = data.River_level.value;
+                var watAttr = data.Waterfall_speed.value;
+
+                var tempChoIcon= '<span id="tempChoGaugeContainer"></span>';
+                var presChoIcon= '<span id="presChoGaugeContainer"></span>';
+                var rivIcon= '<svg id="fillgauge3" width="80%" height="200"></svg>';
+                var watIcon= '<span id="waterGaugeContainer"></span>';
+
+                createGauges();
+                $("#name1").html("Chocolate Room");
+                $('#natt1').html("Temperature");
+                $('#natt2').html("Pressure");
+                $('#natt3').html("River Level");
+                $('#natt4').html("Waterfall Speed");
+                $('#att1').html(tempChoIcon);
+                $('#att2').html(presChoIcon);
+                $('#att3').html(rivIcon);
+                $('#att4').html(watIcon);
+                loadLiquidFillGauge("fillgauge3", rivAttr, config2);
+                gauges["tempCho"].render();
+                gauges["presCho"].render();
+                gauges["water"].render();
+                gauges["tempCho"].redraw(tempAttr);
+                gauges["presCho"].redraw(pressAttr);
+                gauges["water"].redraw(watAttr); 
+
+                break;
+
+            case "Inventing_Room":
+                var tempAttr = data.Temperature.value;
+                var pressAttr = data.Pressure.value;
+                var chewAttr = data.Experimental_Chewing_Gum_size.value;
+                var volAttr = data.Experiments_volatility.value;
+
+                var tempInvIcon= '<span id="tempInvGaugeContainer"></span>';
+                var presInvIcon= '<span id="presInvGaugeContainer"></span>';
+                var gumIcon= '<span id="gumGaugeContainer"></span>';
+                var volIcon= '<span id="volGaugeContainer"></span>';
+
+                createGauges();
+                $("#name2").html("Inventing Room");
+                $('#natt5').html("Temperature");
+                $('#natt6').html("Pressure");
+                $('#natt7').html("Exp. Chewing Gum size");
+                $('#natt8').html("Experiments volatility");
+                $('#att5').html(tempInvIcon);
+                $('#att6').html(presInvIcon);
+                $('#att7').html(gumIcon);
+                $('#att8').html(volIcon);
+                gauges["tempInv"].render();
+                gauges["presInv"].render();
+                gauges["gum"].render();
+                gauges["vol"].render();
+                gauges["tempInv"].redraw(tempAttr);
+                gauges["presInv"].redraw(pressAttr);
+                gauges["gum"].redraw(chewAttr);
+                gauges["vol"].redraw(volAttr);
+
+                break;
+
+            case "Television_Room":
+                var tempAttr = data.Temperature.value;
+                var pressAttr = data.Pressure.value;
+                var powAttr = data.Power_consumed.value;
+                var tvAttr = data.TVs_on.value;
+       
+                var tempTvIcon= '<span id="tempTvGaugeContainer"></span>';
+                var presTvIcon= '<span id="presTvGaugeContainer"></span>';
+                var tvIcon= '<span id="tvGaugeContainer"></span>';
+                var powIcon= '<span id="powerGaugeContainer"></span>';
+
+                createGauges();
+                $("#name3").html("Television Room");
+                $('#natt9').html("Temperature");
+                $('#natt10').html("Pressure");
+                $('#natt11').html("TVs on");
+                $('#natt12').html("Power consumed");
+                $('#att9').html(tempTvIcon);
+                $('#att10').html(presTvIcon);
+                $('#att11').html(tvIcon);
+                $('#att12').html(powIcon);
+                gauges["tempTv"].render();
+                gauges["presTv"].render();
+                gauges["tv"].render();
+                gauges["power"].render();
+                gauges["tempTv"].redraw(tempAttr);
+                gauges["presTv"].redraw(pressAttr);
+                gauges["tv"].redraw(tvAttr);
+                gauges["power"].redraw(powAttr);
+
+                break;
+
+            case "Elevator":
+                var tempAttr = data.Temperature.value;
+                var pressAttr = data.Pressure.value;
+                var floAttr = data.Floor.value;
+       
+                var tempElIcon= '<span id="tempElGaugeContainer"></span>';
+                var presElIcon= '<span id="presElGaugeContainer"></span>';
+                var floorIcon= '<span id="floorGaugeContainer"></span>';
+
+                createGauges();
+                $("#name4").html("Elevator");
+                $('#natt13').html("Temperature");
+                $('#natt14').html("Pressure");
+                $('#natt15').html("Floor");
+                $('#att13').html(tempElIcon);
+                $('#att14').html(presElIcon);
+                $('#att15').html(floorIcon);
+                gauges["tempEl"].render();
+                gauges["presEl"].render();
+                gauges["floor"].render();
+                gauges["tempEl"].redraw(tempAttr);
+                gauges["presEl"].redraw(pressAttr);
+                gauges["floor"].redraw(floAttr);
+
+                break;
+
+            case "Willy_wonka_office":
+                var tempAttr = data.Temperature.value;
+                var pressAttr = data.Pressure.value;
+       
+                var tempWwIcon= '<span id="tempWwGaugeContainer"></span>';
+                var presWwIcon= '<span id="presWwGaugeContainer"></span>';
+
+                createGauges();
+                $("#name5").html("Willy wonka office");
+                $('#natt16').html("Temperature");
+                $('#natt17').html("Pressure");
+                $('#att16').html(tempWwIcon);
+                $('#att17').html(presWwIcon);
+                gauges["tempWw"].render();
+                gauges["presWw"].render();
+                gauges["tempWw"].redraw(tempAttr);
+                gauges["presWw"].redraw(pressAttr);
+
+                break;
+
+            case "Big_hall":
+                var tempAttr = data.Temperature.value;
+                var pressAttr = data.Pressure.value;
+
+                var tempBhIcon= '<span id="tempBhGaugeContainer"></span>';
+                var presBhIcon= '<span id="presBhGaugeContainer"></span>';
+
+                createGauges();
+                $("#name6").html("Big hall");
+                $('#natt18').html("Temperature");
+                $('#natt19').html("Pressure");
+                $('#att18').html(tempBhIcon);
+                $('#att19').html(presBhIcon);
+                gauges["tempBh"].render();
+                gauges["presBh"].render();
+                gauges["tempBh"].redraw(tempAttr);
+                gauges["presBh"].redraw(pressAttr);
+
+                break;
+          }  
+
         });
 
-        socket.on('updateIR', function (data) { 
-         	var tempAttr;
-         	var pressAttr;
-         	var chewAttr;
-         	var volAttr;
-          	for (i=0; i < data.attributes.length; i++) {
-          		switch (data.attributes[i].name) {
-          			case "Temperature":
-          				var tempAttr = data.attributes[i];
-          				break;
-          			case "Pressure":
-          				var pressAttr = data.attributes[i];
-          				break; 
-          			case "Experimental Chewing Gum size":
-          				var chewAttr = data.attributes[i];
-          				break;
-          			case "Experiments volatility":
-          				var volAttr = data.attributes[i];
-          				break;
-          		}
-          	} 
-          	var tempIcon= '<span id="tempGaugeContainer"></span>';
-          	var presIcon= '<span id="presGaugeContainer"></span>';
-          	var gumIcon= '<span id="gumGaugeContainer"></span>';
-          	var volIcon= '<span id="volGaugeContainer"></span>';
-	        createGauges();
-	        $("#name").html(data.id);
-	        $('#natt1').html(tempAttr.name);
-	        $('#natt2').html(pressAttr.name);
-	        $('#natt3').html(chewAttr.name);
-	        $('#natt4').html(volAttr.name);
-	        $('#att1').html(tempIcon);
-	        $('#att2').html(presIcon);
-	        $('#att3').html(gumIcon);
-	        $('#att4').html(volIcon);
-	        gauges["temp"].render();
-	        gauges["pres"].render();
-	        gauges["gum"].render();
-	        gauges["vol"].render();
-	        gauges["temp"].redraw(Math.round(tempAttr.value * 100) / 100);
-        	gauges["pres"].redraw(Math.round(pressAttr.value * 100) / 100);
-          	gauges["gum"].redraw(Math.round(chewAttr.value * 100) / 100);
-          	gauges["vol"].redraw(Math.round(volAttr.value * 100) / 100);
-        });
-
-        socket.on("updateTR", function (data){
-        	var tempAttr;
-         	var pressAttr;
-         	var powAttr;
-         	var tvAttr;
-          	for (i=0; i < data.attributes.length; i++) {
-          		switch (data.attributes[i].name) {
-          			case "Temperature":
-          				var tempAttr = data.attributes[i];
-          				break;
-          			case "Pressure":
-          				var pressAttr = data.attributes[i];
-          				break; 
-          			case "TVs on":
-          				var tvAttr = data.attributes[i];
-          				break;
-          			case "Power consumed":
-          				var powAttr = data.attributes[i];
-          				break;
-          		}
-          	} 
-          	var tempIcon= '<span id="tempGaugeContainer"></span>';
-          	var presIcon= '<span id="presGaugeContainer"></span>';
-          	var tvIcon= '<span id="tvGaugeContainer"></span>';
-          	var powIcon= '<span id="powerGaugeContainer"></span>';
-	        createGauges();
-	        $("#name").html(data.id);
-	        $('#natt1').html(tempAttr.name);
-	        $('#natt2').html(pressAttr.name);
-	        $('#natt3').html(tvAttr.name);
-	        $('#natt4').html(powAttr.name);
-	        $('#att1').html(tempIcon);
-	        $('#att2').html(presIcon);
-	        $('#att3').html(tvIcon);
-	        $('#att4').html(powIcon);
-	        gauges["temp"].render();
-	        gauges["pres"].render();
-	        gauges["tv"].render();
-	        gauges["power"].render();
-	        gauges["temp"].redraw(Math.round(tempAttr.value * 100) / 100);
-        	gauges["pres"].redraw(Math.round(pressAttr.value * 100) / 100);
-          	gauges["tv"].redraw(Math.round(tvAttr.value * 100) / 100);
-          	gauges["power"].redraw(Math.round(powAttr.value * 100) / 100);
-        });
-
-        $("#subChocolate").click(function(){
-          socket.emit("subchocolate", "Subscribing!");
-        });
-        $("#subInventing").click(function(){
-          socket.emit("subinventing", "Subscribing!");
-        });
-        $("#subTelevision").click(function(){
-          socket.emit("subtelevision", "Subscribing!");
-        });
+        // $("#subChocolate").click(function(){
+        //   socket.emit("subchocolate", "Subscribing!");
+        // });
+        // $("#subInventing").click(function(){
+        //   socket.emit("subinventing", "Subscribing!");
+        // });
+        // $("#subTelevision").click(function(){
+        //   socket.emit("subtelevision", "Subscribing!");
+        // });
         
      });
 
   	</script>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/stylesRoomsAdmin.css"> 
+    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">  -->
   </head>
   		<body id="roomsAdmin">
     		<div id="wraped">
@@ -229,16 +278,49 @@
 		  	<div class="container text-center align-center">
 		    <h1 class="page-header">Chocolate Factory Control Panel</h1>
 		    <h2 id="name"></h2>
-		    <div class="logout"><a href="#" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
-		    <div class="col-md-3"><h3 id="natt1"></h3><span id="att1"></span></div>
-		    <div class="col-md-3"><h3 id="natt2"></h3><span id="att2"></span></div>
-		    <div class="col-md-3"><h3 id="natt3"></h3><div id="att3"></div></div>
-		    <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div>
-		    <div class="btn-group btn-rooms" align="center"> 
-		       <button id="subChocolate" class="btn btn-primary" type="submit">Chocolate Room</button>
-		       <button id="subInventing" class="btn btn-primary" type="submit">Inventing Room</button>
-		       <button id="subTelevision"  class="btn btn-primary" type="submit">Television Room</button>
-		    </div> 
+		    <div class="logout"><a href="/logout" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
+        <div class="row">
+          <h2 id="name1"></h2>
+          <div class="col-md-3"><h3 id="natt1"></h3><span id="att1"></span></div>
+          <div class="col-md-3"><h3 id="natt2"></h3><span id="att2"></span></div>
+          <div class="col-md-3"><h3 id="natt3"></h3><div id="att3"></div></div>
+          <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name2"></h2>
+          <div class="col-md-3"><h3 id="natt5"></h3><span id="att5"></span></div>
+          <div class="col-md-3"><h3 id="natt6"></h3><span id="att6"></span></div>
+          <div class="col-md-3"><h3 id="natt7"></h3><span id="att7"></span></div>
+          <div class="col-md-3"><h3 id="natt8"></h3><span id="att8"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name3"></h2>
+          <div class="col-md-3"><h3 id="natt9"></h3><span id="att9"></span></div>
+          <div class="col-md-3"><h3 id="natt10"></h3><span id="att10"></span></div>
+          <div class="col-md-3"><h3 id="natt11"></h3><span id="att11"></span></div>
+          <div class="col-md-3"><h3 id="natt12"></h3><span id="att12"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name4"></h2>
+          <div class="col-md-4"><h3 id="natt13"></h3><span id="att13"></span></div>
+          <div class="col-md-4"><h3 id="natt14"></h3><span id="att14"></span></div>
+          <div class="col-md-4"><h3 id="natt15"></h3><span id="att15"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name5"></h2>
+          <div class="col-md-6"><h3 id="natt16"></h3><span id="att16"></span></div>
+          <div class="col-md-6"><h3 id="natt17"></h3><span id="att17"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name6"></h2>
+          <div class="col-md-6"><h3 id="natt18"></h3><span id="att18"></span></div>
+          <div class="col-md-6"><h3 id="natt19"></h3><span id="att19"></span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4"><a href="/back"> <button class="btn btn-lg btn-primary btn-block">Go back</button></a></div>
+          <div class="col-md-4"></div>
+        </div> 
 		    </div>
 		    </div>
 		    </div>

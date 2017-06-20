@@ -23,16 +23,13 @@ var AZF = (function() {
 
         var roles = get_roles(user_info);
         var app_id = user_info.app_id;
-        log.info("User info  ",user_info);
         var azf_domain = user_info.app_azf_domain
-        log.info(azf_domain)
-        //var azf_domain = config.azf.path.split('/')[3];
-        //log.info("domain is" + azf_domain);
 
         var xml;
 
         var action = req.method;
-        var resource = req.url.split('?')[0].substring(1, req.url.split('?')[0].length);
+        //var resource = req.url.split('?')[0].substring(1, req.url.split('?')[0].length);
+        var resource = req.headers.room;
 
         if (config.azf.custom_policy) {
             log.info('Checking auth with AZF...');
@@ -221,8 +218,6 @@ var AZF = (function() {
         };
 
         proxy.sendData(config.azf.protocol, options, xml, undefined, function (status, resp) {
-            log.info("AZF response status: ", status);
-            log.info("AZF response: ", resp);
             log.debug("AZF response status: ", status);
             log.debug("AZF response: ", resp);
             var decision;
@@ -240,7 +235,6 @@ var AZF = (function() {
             
             decision = String(decision);
 
-            log.info('Decision ', decision)
             log.debug('Decision: ', decision);
             if (decision == 'Permit') {
                 success();

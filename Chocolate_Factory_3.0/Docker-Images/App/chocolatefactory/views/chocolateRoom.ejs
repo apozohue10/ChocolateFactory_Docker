@@ -51,47 +51,33 @@
         }
 
         socket.on('updateCR', function (data) { 
-          var tempAttr;
-          var pressAttr;
-          var rivAttr;
-          var watAttr;
-            for (i=0; i < data.attributes.length; i++) {
-              switch (data.attributes[i].name) {
-                case "Temperature":
-                  var tempAttr = data.attributes[i];
-                  break;
-                case "Pressure":
-                  var pressAttr = data.attributes[i];
-                  break; 
-                case "River level":
-                  var rivAttr = data.attributes[i];
-                  break;
-                case "Waterfall speed":
-                  var watAttr = data.attributes[i];
-                  break;
-              }
-            } 
+          var tempAttr = data.Temperature.value;
+          var pressAttr = data.Pressure.value;
+          var rivAttr = data.River_level.value;
+          var watAttr = data.Waterfall_speed.value;
+
           var tempIcon= '<span id="tempGaugeContainer"></span>';
           var presIcon= '<span id="presGaugeContainer"></span>';
           var rivIcon= '<svg id="fillgauge3" width="80%" height="200"></svg>';
           var watIcon= '<span id="waterGaugeContainer"></span>';
+
           createGauges();
           $("#name").html(data.id);
-          $('#natt1').html(tempAttr.name);
-          $('#natt2').html(pressAttr.name);
-          $('#natt3').html(rivAttr.name);
-          $('#natt4').html(watAttr.name);
+          $('#natt1').html("Temperature");
+          $('#natt2').html("Pressure");
+          $('#natt3').html("River Level");
+          $('#natt4').html("Waterfall Speed");
           $('#att1').html(tempIcon);
           $('#att2').html(presIcon);
           $('#att3').html(rivIcon);
           $('#att4').html(watIcon);
-          loadLiquidFillGauge("fillgauge3", rivAttr.value, config2);
+          loadLiquidFillGauge("fillgauge3", rivAttr, config2);
           gauges["temp"].render();
           gauges["pres"].render();
           gauges["water"].render();
-          gauges["temp"].redraw(Math.round(tempAttr.value * 100) / 100);
-          gauges["pres"].redraw(Math.round(pressAttr.value * 100) / 100);
-          gauges["water"].redraw(Math.round(watAttr.value * 100) / 100); 
+          gauges["temp"].redraw(Math.round(tempAttr * 100) / 100);
+          gauges["pres"].redraw(Math.round(pressAttr * 100) / 100);
+          gauges["water"].redraw(Math.round(watAttr * 100) / 100); 
         });
       });
     </script>
@@ -104,11 +90,12 @@
     <div id='warped'>
     <div class="container text-center align-center">
     <h1 class="page-header">Chocolate Room Control Panel</h1>
-    <div class="logout"><a href="#" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
+    <div class="logout"><a href="/logout" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
     <div class="col-md-3"><h3 id="natt1"></h3><span id="att1"></span></div>
     <div class="col-md-3"><h3 id="natt2"></h3><span id="att2"></span></div>
     <div class="col-md-3"><h3 id="natt3"></h3><div id="att3"></div></div>
-    <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div> 
+    <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div>
+    <a href="/back"> <button class="btn btn-lg btn-primary btn-block">Go back</button></a> 
     </div>
     </div>
     </div>

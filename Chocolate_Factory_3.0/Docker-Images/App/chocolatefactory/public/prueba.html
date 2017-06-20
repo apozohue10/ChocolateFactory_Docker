@@ -1,0 +1,297 @@
+<!DOCTYPE html>  
+<html lang="en">  
+  <head>
+    <meta charset="utf-8">
+    <title>Rooms monitoring</title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/liquidFillGauge.js"></script>
+    <script type="text/javascript" src="javascripts/thermometer.js"></script>
+    <script type="text/javascript" src="javascripts/gauge.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" language="JavaScript"></script>
+    <script type="text/javascript" src="javascripts/singout.js"></script>
+    <script>
+    $(document).ready(function() {
+        var config2 = liquidFillGaugeDefaultSettings();
+          config2.circleColor = "#D4AB6A";
+          config2.textColor = "#553300";
+          config2.waveTextColor = "#805615";
+          config2.waveColor = "#AA7D39";
+          config2.circleThickness = 0.1;
+          config2.circleFillGap = 0.2;
+          config2.textVertPosition = 0.8;
+          config2.waveAnimateTime = 2000;
+          config2.waveHeight = 0.3;
+          config2.waveCount = 1;
+
+      	var gauges = [];
+        function createGauge(name, label, min, max){
+	          var config = 
+	          {
+	            size: 230,
+	            label: label,
+	            min: undefined != min ? min : 0,
+	            max: undefined != max ? max : 100,
+	            minorTicks: 5
+	          };
+	        
+	        var range = config.max - config.min;
+	        config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
+	        config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+	        
+	        gauges[name] = new Gauge(name + "GaugeContainer", config);
+      	}
+
+      	function createDangerGauge(name, label, min, max) {
+	          var config = 
+	          {
+	            size: 230,
+	            label: label,
+	            min: undefined != min ? min : 0,
+	            max: undefined != max ? max : 100,
+	            minorTicks: 5
+	          };
+	        
+	        var range = config.max - config.min;
+	        config.yellowZones = [{ from: config.min + range*0.4, to: config.min + range*0.7 }];
+	        config.redZones = [{ from: config.min + range*0.7, to: config.max }];
+	        
+	        gauges[name] = new Gauge(name + "GaugeContainer", config);
+      	}
+
+
+      	function createGauges() {
+        	createGauge("tempCho", "ºc", 0, 40);
+	        createGauge("presCho", "mmhg", 0, 2000);
+          createGauge("tempInv", "ºc", 0, 40);
+          createGauge("presInv", "mmhg", 0, 2000);
+          createGauge("tempTv", "ºc", 0, 40);
+          createGauge("presTv", "mmhg", 0, 2000);
+          createGauge("tempEl", "ºc", 0, 40);
+          createGauge("presEl", "mmhg", 0, 2000);
+          createGauge("tempWw", "ºc", 0, 40);
+          createGauge("presWw", "mmhg", 0, 2000);
+          createGauge("tempBh", "ºc", 0, 40);
+          createGauge("presBh", "mmhg", 0, 2000);
+	        createGauge("power", "kw", 0, 15000);
+	        createGauge("gum", "cm2", 0, 50);
+	        createGauge("water", "kmh", 0, 70);
+	        createGauge("tv", "nº", 0, 50);
+	        createGauge("vol", "ºc/atm", 0, 500);
+          createGauge("floor", "floor", 0, 20);
+      	}
+
+        	// var tempAttr = data.Temperature.value;
+         //  var pressAttr = data.Pressure.value;
+         //  var rivAttr = data.River_level.value;
+         //  var watAttr = data.Waterfall_speed.value;
+
+          var tempChoIcon= '<span id="tempChoGaugeContainer"></span>';
+          var presChoIcon= '<span id="presChoGaugeContainer"></span>';
+          var rivIcon= '<svg id="fillgauge3" width="80%" height="200"></svg>';
+          var watIcon= '<span id="waterGaugeContainer"></span>';
+
+          createGauges();
+          $("#name1").html("aaaaaaaaa");
+          $('#natt1').html("Temperature");
+          $('#natt2').html("Pressure");
+          $('#natt3').html("River Level");
+          $('#natt4').html("Waterfall Speed");
+          $('#att1').html(tempChoIcon);
+          $('#att2').html(presChoIcon);
+          $('#att3').html(rivIcon);
+          $('#att4').html(watIcon);
+          loadLiquidFillGauge("fillgauge3", 5, config2);
+          gauges["tempCho"].render();
+          gauges["presCho"].render();
+          gauges["water"].render();
+          gauges["tempCho"].redraw(5);
+          gauges["presCho"].redraw(5);
+          gauges["water"].redraw(5); 
+
+
+         // 	var tempAttr = data.Temperature.value;
+         //  var pressAttr = data.Pressure.value;
+         //  var chewAttr = data.Experimental_Chewing_Gum_size.value;
+         //  var volAttr = data.Experiments_volatility.value;
+
+          var tempInvIcon= '<span id="tempInvGaugeContainer"></span>';
+          var presInvIcon= '<span id="presInvGaugeContainer"></span>';
+          var gumIcon= '<span id="gumGaugeContainer"></span>';
+          var volIcon= '<span id="volGaugeContainer"></span>';
+
+          createGauges();
+          $("#name2").html("bbbbbbbbb");
+          $('#natt5').html("Temperature");
+          $('#natt6').html("Pressure");
+          $('#natt7').html("Exp. Chewing Gum size");
+          $('#natt8').html("Experiments volatility");
+          $('#att5').html(tempInvIcon);
+          $('#att6').html(presInvIcon);
+          $('#att7').html(gumIcon);
+          $('#att8').html(volIcon);
+          gauges["tempInv"].render();
+          gauges["presInv"].render();
+          gauges["gum"].render();
+          gauges["vol"].render();
+          gauges["tempInv"].redraw(5);
+          gauges["presInv"].redraw(5);
+          gauges["gum"].redraw(5);
+          gauges["vol"].redraw(5);
+
+        	// var tempAttr = data.Temperature.value;
+         //  var pressAttr = data.Pressure.value;
+         //  var powAttr = data.Power_consumed.value;
+         //  var tvAttr = data.TVs_on.value;
+ 
+          var tempTvIcon= '<span id="tempTvGaugeContainer"></span>';
+          var presTvIcon= '<span id="presTvGaugeContainer"></span>';
+          var tvIcon= '<span id="tvGaugeContainer"></span>';
+          var powIcon= '<span id="powerGaugeContainer"></span>';
+
+          createGauges();
+          $("#name3").html("cccccccccc");
+          $('#natt9').html("Temperature");
+          $('#natt10').html("Pressure");
+          $('#natt11').html("TVs on");
+          $('#natt12').html("Power consumed");
+          $('#att9').html(tempTvIcon);
+          $('#att10').html(presTvIcon);
+          $('#att11').html(tvIcon);
+          $('#att12').html(powIcon);
+          gauges["tempTv"].render();
+          gauges["presTv"].render();
+          gauges["tv"].render();
+          gauges["power"].render();
+          gauges["tempTv"].redraw(5);
+          gauges["presTv"].redraw(5);
+          gauges["tv"].redraw(5);
+          gauges["power"].redraw(5);
+
+          // var tempAttr = data.Temperature.value;
+         //  var pressAttr = data.Pressure.value;
+         //  var powAttr = data.Power_consumed.value;
+         //  var tvAttr = data.TVs_on.value;
+ 
+          var tempElIcon= '<span id="tempElGaugeContainer"></span>';
+          var presElIcon= '<span id="presElGaugeContainer"></span>';
+          var floorIcon= '<span id="floorGaugeContainer"></span>';
+
+          createGauges();
+          $("#name4").html("ddddddd");
+          $('#natt13').html("Temperature");
+          $('#natt14').html("Pressure");
+          $('#natt15').html("Floor");
+          $('#att13').html(tempElIcon);
+          $('#att14').html(presElIcon);
+          $('#att15').html(floorIcon);
+          gauges["tempEl"].render();
+          gauges["presEl"].render();
+          gauges["floor"].render();
+          gauges["tempEl"].redraw(5);
+          gauges["presEl"].redraw(5);
+          gauges["floor"].redraw(5);
+
+          // var tempAttr = data.Temperature.value;
+         //  var pressAttr = data.Pressure.value;
+         //  var powAttr = data.Power_consumed.value;
+         //  var tvAttr = data.TVs_on.value;
+ 
+          var tempWwIcon= '<span id="tempWwGaugeContainer"></span>';
+          var presWwIcon= '<span id="presWwGaugeContainer"></span>';
+
+          createGauges();
+          $("#name5").html("eeeeeeeeee");
+          $('#natt16').html("Temperature");
+          $('#natt17').html("Pressure");
+          $('#att16').html(tempWwIcon);
+          $('#att17').html(presWwIcon);
+          gauges["tempWw"].render();
+          gauges["presWw"].render();
+          gauges["tempWw"].redraw(5);
+          gauges["presWw"].redraw(5);
+
+          // var tempAttr = data.Temperature.value;
+         //  var pressAttr = data.Pressure.value;
+         //  var powAttr = data.Power_consumed.value;
+         //  var tvAttr = data.TVs_on.value;
+
+          var tempBhIcon= '<span id="tempBhGaugeContainer"></span>';
+          var presBhIcon= '<span id="presBhGaugeContainer"></span>';
+
+          createGauges();
+          $("#name6").html("ffffffffffff");
+          $('#natt18').html("Temperature");
+          $('#natt19').html("Pressure");
+          $('#att18').html(tempBhIcon);
+          $('#att19').html(presBhIcon);
+          gauges["tempBh"].render();
+          gauges["presBh"].render();
+          gauges["tempBh"].redraw(5);
+          gauges["presBh"].redraw(5);
+        
+     });
+
+  	</script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/stylesRoomsAdmin.css"> 
+    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">  -->
+  </head>
+  		<body id="roomsAdmin">
+    		<div id="wraped">
+  			<div class="container">
+		   	<div id='warped'>
+		  	<div class="container text-center align-center">
+		    <h1 class="page-header">Chocolate Factory Control Panel</h1>
+		    <div id="logout" class="logout"><a href="#" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
+        <div class="row">
+          <h2 id="name1"></h2>
+  		    <div class="col-md-3"><h3 id="natt1"></h3><span id="att1"></span></div>
+  		    <div class="col-md-3"><h3 id="natt2"></h3><span id="att2"></span></div>
+  		    <div class="col-md-3"><h3 id="natt3"></h3><div id="att3"></div></div>
+  		    <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name2"></h2>
+          <div class="col-md-3"><h3 id="natt5"></h3><span id="att5"></span></div>
+          <div class="col-md-3"><h3 id="natt6"></h3><span id="att6"></span></div>
+          <div class="col-md-3"><h3 id="natt7"></h3><span id="att7"></span></div>
+          <div class="col-md-3"><h3 id="natt8"></h3><span id="att8"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name3"></h2>
+          <div class="col-md-3"><h3 id="natt9"></h3><span id="att9"></span></div>
+          <div class="col-md-3"><h3 id="natt10"></h3><span id="att10"></span></div>
+          <div class="col-md-3"><h3 id="natt11"></h3><span id="att11"></span></div>
+          <div class="col-md-3"><h3 id="natt12"></h3><span id="att12"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name4"></h2>
+          <div class="col-md-4"><h3 id="natt13"></h3><span id="att13"></span></div>
+          <div class="col-md-4"><h3 id="natt14"></h3><span id="att14"></span></div>
+          <div class="col-md-4"><h3 id="natt15"></h3><span id="att15"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name5"></h2>
+          <div class="col-md-6"><h3 id="natt16"></h3><span id="att16"></span></div>
+          <div class="col-md-6"><h3 id="natt17"></h3><span id="att17"></span></div>
+        </div>
+        <div class="row">
+          <h2 id="name6"></h2>
+          <div class="col-md-6"><h3 id="natt18"></h3><span id="att18"></span></div>
+          <div class="col-md-6"><h3 id="natt19"></h3><span id="att19"></span></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4"></div>
+          <div class="col-md-4"><a href="/back"> <button class="btn btn-lg btn-primary btn-block">Go back</button></a></div>
+          <div class="col-md-4"></div>
+        </div> 
+		    </div>
+		    </div>
+		    </div>
+    		</div>
+     		<footer class="footer" align="center">  
+  			</footer>
+  		</body>
+</html>  

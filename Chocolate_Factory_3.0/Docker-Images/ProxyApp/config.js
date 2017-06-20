@@ -16,15 +16,15 @@ config.account_host = 'https://idm:8000';
 config.keystone_host = 'idm';
 config.keystone_port = 5000;
 
-config.app_host = '172.17.0.1';
-config.app_port = '1028';
+config.app_host = 'orion';
+config.app_port = '1026';
 
 // Use true if the app server listens in https
 config.app_ssl = false;
 
 // Credentials obtained when registering PEP Proxy in Account Portal
-config.username = 'pepProxy';
-config.password = 'pepProxy';
+config.username = 'pepProxyApp';
+config.password = 'pepProxyApp';
 
 // in seconds
 config.cache_time = 300;

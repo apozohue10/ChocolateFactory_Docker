@@ -10,7 +10,6 @@ var prettyjson = require('prettyjson');
 var fs = require("fs");
 var http = require('http');
 var app = express();
-var updateContext = require('./context_operations/updateContext');
 var queryContext = require('./context_operations/queryContext');
 var subscriptions = require('./context_operations/subscription');
 
@@ -40,6 +39,9 @@ app.use(session({
 var subID; 
 var subIds = [];
 
+// Var to store token for the access to admin room
+token_admin_rooms = undefined;
+
 // IdM config data from config.js file
 var client_id = config.client_id;
 var client_secret = config.client_secret;
@@ -59,22 +61,14 @@ var oa = new OAuth2(client_id,
                     '/oauth2/token',
                     callbackURL);
 
-/* Context information updates from the virtual sensors */
-updateContext.updateChocolateRoom();
-updateContext.updateInventingRoom();
-updateContext.updateTelevisionRoom();
-updateContext.updateHall();
-updateContext.updateOffice();
-updateContext.updateElevator();
 
 /* Context information responses for each Room on data change  */ 
 
 //Chocolate Room
 app.post("/contextResponseCR", function(req, resp){
-  var theJson = req.body.contextResponses[0].contextElement
+  var theJson = req.body.data[0]
   subID = req.body.subscriptionId;
-  console.log("SubIds: " + subID);
-  console.log(subIds)
+  console.log("chocolate: " + subID);
   var exist = subIds.indexOf(subID);
       if(exist == -1){
         subIds.push(subID);
@@ -88,7 +82,7 @@ app.post("/contextResponseCR", function(req, resp){
 
 //Inventing Room
 app.post("/contextResponseIR", function(req, resp){
-  var theJson = req.body.contextResponses[0].contextElement
+  var theJson = req.body.data[0]
   subID = req.body.subscriptionId;
   console.log("invent " + subID);
   var exist = subIds.indexOf(subID);
@@ -104,7 +98,7 @@ app.post("/contextResponseIR", function(req, resp){
 
 //Television Room
 app.post("/contextResponseTR", function(req, resp){
-  var theJson = req.body.contextResponses[0].contextElement
+  var theJson = req.body.data[0]
   subID = req.body.subscriptionId;
   console.log("tv room " + subID);
   var exist = subIds.indexOf(subID);
@@ -118,60 +112,93 @@ app.post("/contextResponseTR", function(req, resp){
   }
 });
 
-//Big hall 
-app.post("/contextResponseHall", function(req, resp){
-  var theJson = req.body.contextResponses[0].contextElement
+//Occupation on all rooms
+app.post("/contextResponseAR", function(req, resp){
+  var theJson = req.body.data[0]
   subID = req.body.subscriptionId;
-  console.log("hall " + subID);
+  console.log("Occupation " + subID);
   var exist = subIds.indexOf(subID);
       if(exist == -1){
         subIds.push(subID);
-        console.log("SubId of Big Hall stored");
+        console.log("SubId of Occupation stored");
       }
 
   for(s in sockets){
-      sockets[s].emit('updateHall', theJson);
+      sockets[s].emit('updateAR', theJson);
   }
 });
 
-//Willy Wonka's office
-app.post("/contextResponseOffice", function(req, resp){
-  var theJson = req.body.contextResponses[0].contextElement
+app.post("/contextResponseARA", function(req, resp){
+  var theJson = req.body.data[0]
+  console.log("---------------")
+  console.log(theJson)
   subID = req.body.subscriptionId;
-  console.log("office " + subID);
+  console.log("Occupation " + subID);
   var exist = subIds.indexOf(subID);
       if(exist == -1){
         subIds.push(subID);
-        console.log("SubId of Office stored");
+        console.log("SubId of Occupation stored");
       }
 
   for(s in sockets){
-      sockets[s].emit('updateOffice', theJson);
+      sockets[s].emit('updateARA', theJson);
   }
 });
 
-//Elevator
-app.post("/contextResponseElevator", function(req, resp){
-  var theJson = req.body.contextResponses[0].contextElement
-  subID = req.body.subscriptionId;
-  console.log("Elevator " + subID);
-  var exist = subIds.indexOf(subID);
-      if(exist == -1){
-        subIds.push(subID);
-        console.log("SubId of Elevator stored");
-      }
+// //Big hall 
+// app.post("/contextResponseHall", function(req, resp){
+//   var theJson = req.body.contextResponses[0].contextElement
+//   subID = req.body.subscriptionId;
+//   console.log("hall " + subID);
+//   var exist = subIds.indexOf(subID);
+//       if(exist == -1){
+//         subIds.push(subID);
+//         console.log("SubId of Big Hall stored");
+//       }
 
-  for(s in sockets){
-      sockets[s].emit('updateElevator', theJson);
-  }
-});
+//   for(s in sockets){
+//       sockets[s].emit('updateHall', theJson);
+//   }
+// });
+
+// //Willy Wonka's office
+// app.post("/contextResponseOffice", function(req, resp){
+//   var theJson = req.body.contextResponses[0].contextElement
+//   subID = req.body.subscriptionId;
+//   console.log("office " + subID);
+//   var exist = subIds.indexOf(subID);
+//       if(exist == -1){
+//         subIds.push(subID);
+//         console.log("SubId of Office stored");
+//       }
+
+//   for(s in sockets){
+//       sockets[s].emit('updateOffice', theJson);
+//   }
+// });
+
+// //Elevator
+// app.post("/contextResponseElevator", function(req, resp){
+//   var theJson = req.body.contextResponses[0].contextElement
+//   subID = req.body.subscriptionId;
+//   console.log("Elevator " + subID);
+//   var exist = subIds.indexOf(subID);
+//       if(exist == -1){
+//         subIds.push(subID);
+//         console.log("SubId of Elevator stored");
+//       }
+
+//   for(s in sockets){
+//       sockets[s].emit('updateElevator', theJson);
+//   }
+// });
 
 /* Page router and Pep-Proxy connection for permission handling */
     
 app.get('/', function (req, res) { 
   if(subIds.length > 0){
     for(id in subIds){
-      subscriptions.unsubscribeContext(subIds[id]); 
+      subscriptions.unsubscribeContext(req.session.access_token, subIds[id]); 
     }
      subIds = [];
     }
@@ -183,27 +210,6 @@ app.get('/', function (req, res) {
     }
 });
 
-app.get('/index', function(req, res) {
-  var url = config.idmURL + '/user/';
-  oa.get(url, req.session.access_token, function (e, response) {
-    var user = JSON.parse(response);
-    console.log(user); 
-    userName = user.displayName;
-    userRole = user.roles[0].name;
-   
-    if (userRole == "Factory Owner") {
-   	  res.redirect('/admin-menu');
-    } else if(userRole == "Television Room Oompa Loompa") {
-   	  res.redirect('/televisionroom')
-    } else if(userRole == "Chocolate Room Oompa Loompa") {
-   	  res.redirect('/chocolateroom')
-    } else if(userRole == "Inventing Room Oompa Loompa") {
-   	  res.redirect('/inventingroom');
-    } else if(userRole == "Security Guard") {
-      res.redirect('/admin-map');
-    }
-  });
-});
 
 app.get('/login', function(req, res){
   // Using the access code goes again to the IDM to obtain the access_token
@@ -211,7 +217,7 @@ app.get('/login', function(req, res){
     // Stores the access_token in a session cookie
     req.session.access_token = results.access_token;
     console.log(req.session.access_token)
-    res.redirect('/index');
+    res.redirect('/admin-menu');
   });
 });
 
@@ -221,205 +227,150 @@ app.get('/auth', function(req, res){
 });
 
 app.get('/logout', function(req, res){
-  req.session.access_token = undefined;  
   if (subIds.length > 0) {
     for (id in subIds) {
-       subscriptions.unsubscribeContext(subIds[id]);
+       subscriptions.unsubscribeContext(req.session.access_token, subIds[id]);
     }
     subIds = [];
-	}
+  }
+  token_admin_rooms = undefined;
+  req.session.access_token = undefined;  
   res.redirect('/');
 });
 
-app.get('/admin-map', function(req, res){
-	var headers = {
-    'X-Auth-Token': req.session.access_token
-  };
-
-  var options = {
-    host: 'localhost',
-    port: '8070',
-    path: '/admin-map',
-    headers: headers
-  };
-  var req = http.request(options, function(response) {
-  	response.setEncoding('utf-8');
- 	  console.log('STATUS: ' + response.statusCode);
- 	  if (response.statusCode == 200) {
-  	 	if (subIds.length > 0){
-        for (id in subIds) {
-          subscriptions.unsubscribeContext(subIds[id]);
-        }
-        subIds = [];
-      }
-      subscriptions.subscribeChocolateContext();
-      subscriptions.subscribeTelevisionContext();
-      subscriptions.subscribeHallContext();
-      subscriptions.subscribeOfficeContext();
-      subscriptions.subscribeElevatorContext();
-      subscriptions.subscribeInventingContext();
-      res.render('roomMap');
-
-  	} else if (response.statusCode == 401) {
-    	res.redirect('/notAuthorized');
-  	} 
-	});
-  req.end();
- });  
-
 app.get('/admin-menu', function(req, res){
-  var headers = {
-    'X-Auth-Token': req.session.access_token
-  };
-
-  var options = {
-    host: 'localhost',
-    port: '8070',
-    path: '/admin-menu',
-    headers: headers
-  };
-  var req = http.request(options, function(response) {
-	  response.setEncoding('utf-8');
-	 	console.log('STATUS: ' + response.statusCode);
-	 	if(response.statusCode == 200){
-      if(subIds.length > 0){
-        for(id in subIds){
-          subscriptions.unsubscribeContext(subIds[id]);
-        }
-        subIds = [];
+  if(subIds.length > 0){
+      for(id in subIds){
+        subscriptions.unsubscribeContext(req.session.access_token, subIds[id]);
       }
-	    res.render('adminMenu');
-	  } else if(response.statusCode == 401) {
-	    res.redirect('/notAuthorized');
-	  } 
-	});
-  req.end();
+    subIds = [];
+  }
+  res.render('adminMenu');
 });
 
+app.get('/admin-map', function(req, res){
+	subscribeData = subscriptions.subscribeAdminMapContext(req.session.access_token);
+  var completed_requests = 1;
+  for ( i= 1; i < subscribeData.length; i++) {
+    	var req = http.request(subscribeData[0], function(response) {
+      		response.setEncoding('utf-8');
+      		console.log('STATUS: ' + response.statusCode);
+          completed_requests++;
+      		if((response.statusCode == 200) && (completed_requests == 6)){
+        		console.log("Subscription accepted")
+            res.render('roomMap');
+     		  } else if((response.statusCode == 401) && (completed_requests == (subscribeData.length - 1))) {
+       			  res.redirect('/notAuthorized');
+      		}
+    	});
+
+    	req.on('error', function(e) {
+    	  console.log('Problem with the Occupations subscription');
+    	});
+
+    	req.write(subscribeData[i]);
+    	req.end();
+  }
+ });  
+
 app.get('/admin-rooms', function(req, res){
-  var headers = {
-    'X-Auth-Token': req.session.access_token
-  };
-
-  var options = {
-    host: 'localhost',
-    port: '8070',
-    path: '/admin-rooms',
-    headers: headers
-  };
-
-  var req = http.request(options, function(response) {
-  	response.setEncoding('utf-8');
- 	 	console.log('STATUS: ' + response.statusCode);
-    	if(response.statusCode == 200){
-    		if(subIds.length > 0){
-         	for(id in subIds){
-            subscriptions.unsubscribeContext(subIds[id]);            	
-          }
-          subIds = [];
-        }
-    		subscriptions.subscribeChocolateContext();
+	token_admin_rooms = req.session.access_token;
+  subscribeData = subscriptions.subscribeAdminRoomContext(req.session.access_token);
+	var req = http.request(subscribeData[0], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted")
     		res.render('roomsAdmin');
-  		} else if(response.statusCode == 401){
-  			res.redirect('/notAuthorized');
- 		 } 
+ 		} else if(response.statusCode == 401) {
+   			res.redirect('/notAuthorized');
+  		}
 	});
-	req.end();  
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Chocolate Room subscription');
+	});
+
+	req.write(subscribeData[1]);
+	req.end();
 });
 
 app.get('/televisionroom', function(req, res){
-	var headers = {
-    'X-Auth-Token': req.session.access_token
-  };
-  var options = {
-    host: 'localhost',
-    port: '8070',
-    path: '/televisionroom',
-    headers: headers
-  };
-  var req = http.request(options, function(response) {
-	  response.setEncoding('utf-8');
-	 	console.log('STATUS: ' + response.statusCode);
-	 	 	if(response.statusCode == 200){
-        subscriptions.subscribeTelevisionContext();
-	  	 	res.render('televisionRoom');
-	  	} else if(response.statusCode == 401) {
-	    	res.redirect('/notAuthorized');
-	  	} 
+	subscribeData = subscriptions.subscribeTelevisionContext(req.session.access_token);
+	var req = http.request(subscribeData[1], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted")
+      		res.render('televisionRoom');
+ 		} else if(response.statusCode == 401) {
+   			res.redirect('/notAuthorized');
+  		}
 	});
-  req.end();
- });
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Television Room subscription');
+	});
+
+	req.write(subscribeData[0]);
+	req.end();
+});
 
 app.get('/inventingroom', function(req, res){
-  var headers = {
-    'X-Auth-Token': req.session.access_token
-  };
-  var options = {
-    host: 'localhost',
-    port: '8070',
-    path: '/inventingroom',
-    headers: headers
-  };
-  var req = http.request(options, function(response) {
-	  response.setEncoding('utf-8');
-	 	console.log('STATUS: ' + response.statusCode);
-	 	if(response.statusCode == 200){
-      subscriptions.subscribeInventingContext();
-	  	res.render('inventingRoom');
-	  } else if(response.statusCode == 401) {
-	    	res.redirect('/notAuthorized');
-	  } 
+  	subscribeData = subscriptions.subscribeInventingContext(req.session.access_token);
+	var req = http.request(subscribeData[1], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted")
+      		res.render('inventingRoom');
+ 		} else if(response.statusCode == 401) {
+   			res.redirect('/notAuthorized');
+  		}
 	});
-  req.end();
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Inventing Room subscription');
+	});
+
+	req.write(subscribeData[0]);
+	req.end();
 });
 
 app.get('/chocolateroom', function(req, res){
-	var headers = {
-    'X-Auth-Token': req.session.access_token
-  };
-  var options = {
-    host: 'localhost',
-    port: '8070',
-    path: '/chocolateroom',
-    headers: headers
-  };
-  var req = http.request(options, function(response) {
-	  //response.setEncoding('utf-8');
-	 	console.log('STATUS: ' + response.statusCode);
-	 	if(response.statusCode == 200){
-      subscriptions.subscribeChocolateContext();
-	  	res.render('chocolateRoom');
-	  } else if(response.statusCode == 401) {
-	    res.redirect('/notAuthorized');
-	  } 
+	subscribeData = subscriptions.subscribeChocolateContext(req.session.access_token);
+	var req = http.request(subscribeData[1], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted")
+      		res.render('chocolateRoom');
+ 		} else if(response.statusCode == 401) {
+   			res.redirect('/notAuthorized');
+  		}
 	});
-  req.end();
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Chocolate Room subscription');
+	});
+
+	req.write(subscribeData[0]);
+	req.end();
  });
 
 app.get('/notAuthorized', function(req, res){
 	if (subIds.length > 0){
         for (id in subIds) {
-          subscriptions.unsubscribeContext(subIds[id]);
+          subscriptions.unsubscribeContext(req.session.access_token, subIds[id]);
         }
         subIds = [];
       }
-  res.render('notauthorized');
+  	res.render('notauthorized');
 });
 
 app.get('/back', function(req, res){
-	if(userRole == "Factory Owner"){
-    res.redirect('/admin-menu');
-  } else if(userRole == "Television Room Oompa Loompa") {
-    res.redirect('/televisionroom')
-  } else if(userRole == "Chocolate Room Oompa Loompa") {
-    res.redirect('/chocolateroom')
-  } else if(userRole == "Inventing Room Oompa Loompa") {
-    res.redirect('/inventingroom');
-  } else if(userRole == "Security Guard") {
-      res.redirect('/admin-rooms');
-  } else {
-    res.redirect('/');
-  }
+  console.log('BACK');
+  res.redirect('/admin-menu');
 });
 
 
@@ -432,33 +383,87 @@ var io = require('socket.io').listen(server);
 io.on("connection", function(socket){
   sockets.push(socket);
   socket.on('subchocolate', function(data){
+  	// Unsubscribe from other room
     if(subIds.length > 0){
       for(id in subIds){
-          subscriptions.unsubscribeContext(subIds[id]);      
+          subscriptions.unsubscribeContext(token_admin_rooms, subIds[id]);      
       }
       subIds = [];
     }
-    subscriptions.subscribeChocolateContext();
+    // Subscribe Chocolate Room
+    subscribeData = subscriptions.subscribeChocolateContext(token_admin_rooms);
+	var req = http.request(subscribeData[1], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted")
+ 		} else if(response.statusCode == 401) {
+   			console.log("Not Authorized");
+  		}
+	});
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Chocolate Room subscription');
+	});
+
+	req.write(subscribeData[0]);
+	req.end();
   }); 
 
   socket.on('subinventing', function(data){
+  	// Unsubscribe from other room
     if(subIds.length > 0){
       for(id in subIds){
-          subscriptions.unsubscribeContext(subIds[id]);          
+          subscriptions.unsubscribeContext(token_admin_rooms, subIds[id]);          
       }
       subIds = [];
     }
-    subscriptions.subscribeInventingContext();   
+    // Subscribe Inventing Room
+    subscribeData = subscriptions.subscribeInventingContext(token_admin_rooms);
+	var req = http.request(subscribeData[1], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted")
+ 		} else if(response.statusCode == 401) {
+   			console.log("Not Authorized");
+  		}
+	});
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Inventing Room subscription');
+	});
+
+	req.write(subscribeData[0]);
+	req.end();  
   });
 
   socket.on('subtelevision', function(data){
+  	// Unsubscribe from other room
     if(subIds.length > 0){
       for(id in subIds){
-          subscriptions.unsubscribeContext(subIds[id]);              
+          subscriptions.unsubscribeContext(token_admin_rooms, subIds[id]);              
       }
       subIds = [];
     }
-    subscriptions.subscribeTelevisionContext();   
+    // Subscribe Television Room
+    subscribeData = subscriptions.subscribeTelevisionContext(token_admin_rooms);
+	var req = http.request(subscribeData[1], function(response) {
+  		response.setEncoding('utf-8');
+  		console.log('STATUS: ' + response.statusCode);
+  		if(response.statusCode == 200){
+    		console.log("Subscription accepted");
+ 		} else if(response.statusCode == 401) {
+   			console.log("Not Authorized");
+  		}
+	});
+
+	req.on('error', function(e) {
+	  console.log('Problem with the Television Room subscription');
+	});
+
+	req.write(subscribeData[0]);
+	req.end();  
   });
 });
 

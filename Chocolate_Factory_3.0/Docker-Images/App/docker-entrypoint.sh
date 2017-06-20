@@ -1,49 +1,38 @@
 #!/bin/bash
 
-# Author: Alejandro Pozo Huertas
 # Entrypoint for Chocolate Factory application
+# Author: Alejandro Pozo Huertas
+# Project: TFM for ETSIT-UPM
+
 
 # Create Chocolate Room
 function create_chocolateRoom () {
 
   echo "---Creando Chocolate Room---"
-  VARENTYCR=`(curl orion:1026/v1/updateContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
+  VARENTYCR=`(curl orion:1026/v2/entities -s -S --header 'Content-Type: application/json' -d @-) <<EOF
 {
-    "contextElements": [
-        {
-            "type": "Room",
-            "isPattern": "false",
-            "id": "Chocolate Room",
-            "attributes": [
-            {
-                "name": "Temperature",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Pressure",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Waterfall speed",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "River level",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Occupation",
-                "type": "integer",
-                "value": "0"
-            }
-            ]
-        }
-    ],
-    "updateAction": "APPEND"
+      "id": "Chocolate_Room",
+      "type": "Room",
+      "Temperature": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Pressure": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Waterfall_speed": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "River_level": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Occupation": {
+          "value": "0",
+          "type": "Integer"
+      }
 }
 EOF`
   echo "$VARENTYCR"
@@ -53,43 +42,30 @@ EOF`
 function create_inventingRoom () {
 
   echo "---Creando Inventing Room---"
-  VARENTYIR=`(curl orion:1026/v1/updateContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
+  VARENTYIR=`(curl orion:1026/v2/entities -s -S --header 'Content-Type: application/json' -d @-) <<EOF
 {
-    "contextElements": [
-        {
-            "type": "Room",
-            "isPattern": "false",
-            "id": "Inventing Room",
-            "attributes": [
-            {
-                "name": "Temperature",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Pressure",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Experimental Chewing Gum size",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Experiments volatility",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Occupation",
-                "type": "integer",
-                "value": "0"
-            }
-            ]
-        }
-    ],
-    "updateAction": "APPEND"
+      "id": "Inventing_Room",
+      "type": "Room",
+      "Temperature": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Pressure": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Experimental_Chewing_Gum_size": {
+          "value": "0.0",          
+          "type": "Float"
+      },
+      "Experiments_volatility": {
+          "value": "0",         
+          "type": "Integer"
+      },
+      "Occupation": {
+          "value": "0",
+          "type": "Integer"
+      }
 }
 EOF`
   echo "$VARENTYIR"
@@ -99,43 +75,30 @@ EOF`
 function create_televisionRoom () {
 
   echo "---Creando Television Room---"
-  VARENTYTR=`(curl orion:1026/v1/updateContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
+  VARENTYTR=`(curl orion:1026/v2/entities -s -S --header 'Content-Type: application/json' -d @-) <<EOF
 {
-    "contextElements": [
-        {
-            "type": "Room",
-            "isPattern": "false",
-            "id": "Television Room",
-            "attributes": [
-            {
-                "name": "Temperature",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Pressure",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "TVs on",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Power consumed",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Occupation",
-                "type": "integer",
-                "value": "0"
-            }
-            ]
-        }
-    ],
-    "updateAction": "APPEND"
+      "id": "Television_Room",
+      "type": "Room",
+      "Temperature": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Pressure": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "TVs_on": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Power_consumed": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Occupation": {
+          "value": "0",
+          "type": "Integer"
+      }
 }
 EOF`
   echo "$VARENTYTR"
@@ -145,33 +108,22 @@ EOF`
 function create_bigHall () {
 
   echo "---Creando Big hall---"
-  VARENTYBG=`(curl orion:1026/v1/updateContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
+  VARENTYBG=`(curl orion:1026/v2/entities -s -S --header 'Content-Type: application/json' -d @-) <<EOF
 {
-    "contextElements": [
-        {
-            "type": "Room",
-            "isPattern": "false",
-            "id": "Big hall",
-            "attributes": [
-            {
-                "name": "Temperature",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Pressure",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Occupation",
-                "type": "integer",
-                "value": "0"
-            }
-            ]
-        }
-    ],
-    "updateAction": "APPEND"
+      "id": "Big_hall",
+      "type": "Room",
+      "Temperature": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Pressure": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Occupation": {
+          "value": "0",
+          "type": "Integer"
+      }
 }
 EOF`
   echo "$VARENTYBG"
@@ -181,33 +133,22 @@ EOF`
 function create_willyWonkaOffice () {
 
   echo "---Creando Willy wonka office---"
-  VARENTYWO=`(curl orion:1026/v1/updateContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
-{
-    "contextElements": [
-        {
-            "type": "Room",
-            "isPattern": "false",
-            "id": "Willy wonka office",
-            "attributes": [
-            {
-                "name": "Temperature",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Pressure",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Occupation",
-                "type": "integer",
-                "value": "0"
-            }
-            ]
-        }
-    ],
-    "updateAction": "APPEND"
+  VARENTYWO=`(curl orion:1026/v2/entities -s -S --header 'Content-Type: application/json' -d @-) <<EOF
+{           
+      "id": "Willy_wonka_office",
+      "type": "Room", 
+      "Temperature": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Pressure": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Occupation": {
+          "value": "0",
+          "type": "Integer"
+      }
 }
 EOF`
   echo "$VARENTYWO"
@@ -217,38 +158,26 @@ EOF`
 function create_elevator () {
 
   echo "---Creando Elevator---"
-  VARENTYEL=`(curl orion:1026/v1/updateContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
+  VARENTYEL=`(curl orion:1026/v2/entities -s -S --header 'Content-Type: application/json' -d @-) <<EOF
 {
-    "contextElements": [
-        {
-            "type": "Transportation",
-            "isPattern": "false",
-            "id": "Elevator",
-            "attributes": [
-            {
-                "name": "Temperature",
-                "type": "float",
-                "value": "0.0"
-            },
-            {
-                "name": "Pressure",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Floor",
-                "type": "integer",
-                "value": "0"
-            },
-            {
-                "name": "Occupation",
-                "type": "integer",
-                "value": "0"
-            }
-            ]
-        }
-    ],
-    "updateAction": "APPEND"
+      "id": "Elevator",
+      "type": "Transportation",
+      "Temperature": {
+          "value": "0.0",
+          "type": "Float"
+      },
+      "Pressure": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Floor": {
+          "value": "0",
+          "type": "Integer"
+      },
+      "Occupation": {
+          "value": "0",
+          "type": "Integer"
+      }
 }
 EOF`
   echo "$VARENTYEL"
@@ -268,48 +197,20 @@ function conex_cb () {
 function comprueba_entities () {
 
     echo "---Comprobando si las entidades estan creadas---"
-    QUERY=`(curl orion:1026/v1/queryContext -s -S --header 'Content-Type: application/json' --header 'Accept: application/json' -d @- | python -mjson.tool) <<EOF
-    {
-      "entities": [
-          {
-              "type": "$2",
-              "isPattern": "false",
-              "id": "$1"
-          }
-      ]
-    }
-EOF`
-    VARPAS="false"
-    arrayEn=$(echo $QUERY | tr "\"" "\n")
-    array=()
-    for x in $arrayEn
-    do
-      
-      if [ $x == "code" ];then
-        VARPAS="true"
-      fi
-      if [ $x == "," ];then
-        VARPAS="false"
-      fi
-      if [ $VARPAS == "true" ]; then
-        array+=($x)
-      fi
-    done
+    QUERY=`curl --write-out %{http_code} --silent --output /dev/null 172.18.0.4:1026/v2/entities/$1?type=$2 -s -S  --header 'Accept: application/json' | python -mjson.tool`
 
-    VARR=${array[2]}
-
-    if [ "$VARR" == "404" ];then
+    if [ "$QUERY" == "404" ];then
       echo "---$1 no esta creado y hay que crearlo---"
       case $1 in
-        "Chocolate Room") create_chocolateRoom ;;
-        "Inventing Room") create_inventingRoom ;;
-        "Television Room") create_televisionRoom ;;
-        "Big hall") create_bigHall ;;
-        "Willy wonka office") create_willyWonkaOffice ;;
+        "Chocolate_Room") create_chocolateRoom ;;
+        "Inventing_Room") create_inventingRoom ;;
+        "Television_Room") create_televisionRoom ;;
+        "Big_hall") create_bigHall ;;
+        "Willy_wonka_office") create_willyWonkaOffice ;;
         "Elevator") create_elevator ;;
         *) echo "Nombre entity incorrecto";;
       esac
-    elif  [ "$VARR" == "200" ];then
+    elif  [ "$QUERY" == "200" ];then
       echo "---$1 ya esta creado---"
     else
       echo "---Error de comunicación---"
@@ -384,39 +285,6 @@ function client_secret () {
 
 }
 
-# Actualize config.js, app.js, subscription.js and updateContext.js
-function actualizar_archivos () {
-
-  echo "---Configurar config.js, app.js, subscription.js y updateContext.js---"
-  VARIPAPP=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'` 
-  VARIPIDM=`ping -c 1 idm | grep -m 1 "" | cut -d "(" -f2 | cut -d ")" -f1`
-  echo "Ip de app $VARIPAPP"   
-  echo "Ip de idm $VARIPIDM"
-
-
-  VARCONFIG=`cat config.js | grep config.idmURL | cut -d " " -f3`
-  if [ "$VARCONFIG" == "'http://localhost:8000';" ]; then
-     echo "Configurando archivos..."
-     sed -i "s|config.idmURL = 'http://localhost:8000';|config.idmURL = 'http://$VARIPIDM:8000';|" config.js
-     sed -i "s|config.callbackURL = 'http://localhost:1028/login';|config.callbackURL = 'http://$VARIPAPP:1028/login';|" config.js
-     sed -i "s/localhost/orion/" context_operations/updateContext.js
-     sed -i "s/8080/1026/" context_operations/updateContext.js
-     sed -i "s/138.4.7.25/$VARIPAPP/" context_operations/subscription.js
-     sed -i "s/localhost/orion/" context_operations/subscription.js
-     sed -i "s/8080/1026/" context_operations/subscription.js
-     sed -i "s/localhost/pepproxy/" app.js
-     sed -i "/updateContext.updateChocolateRoom();/d" app.js
-     sed -i "/updateContext.updateInventingRoom();/d" app.js
-     sed -i "/updateContext.updateTelevisionRoom();/d" app.js
-     sed -i "/updateContext.updateHall();/d" app.js
-     sed -i "/updateContext.updateOffice();/d" app.js
-     sed -i "/updateContext.updateElevator();/d" app.js
-  else
-     echo "Archivos ya configurados"
-  fi
-  
-  
-}
 
 # Check connections
 echo "Comprueba conexiones"
@@ -426,11 +294,11 @@ echo "Conexion a IDM..."
 conex_idm
 
 # Array with entity names
-varCho="Chocolate Room"
-varInv="Inventing Room"
-varTel="Television Room"
-varBig="Big hall"
-varWil="Willy wonka office"
+varCho="Chocolate_Room"
+varInv="Inventing_Room"
+varTel="Television_Room"
+varBig="Big_hall"
+varWil="Willy_wonka_office"
 varEle="Elevator"
 varRoom="Room"
 varTrans="Transportation"
@@ -446,7 +314,6 @@ comprueba_entities "${varEle}" "${varTrans}"
 # Check if data has beeen configured in files
 client_id
 client_secret
-actualizar_archivos
 
 # Run app
 node app.js

@@ -112,10 +112,9 @@ var Root = (function() {
             headers: proxy.getClientIp(req, req.headers)
         };
         
-        console.log('redirijo a la app ', options);
 
         res.status(200).send("Authorized")
-        //proxy.sendData(protocol, options, req.body, res);
+        proxy.sendData(protocol, options, req.body, res);
     };
 
     return {

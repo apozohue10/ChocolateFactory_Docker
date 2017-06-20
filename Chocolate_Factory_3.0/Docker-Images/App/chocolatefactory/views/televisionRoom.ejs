@@ -2,7 +2,7 @@
 <html lang="en">  
   <head>
     <meta charset="utf-8">
-    <title>Chocolate Room</title>
+    <title>Television Room</title>
     <script src="http://localhost:1028/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="javascripts/bootstrap/bootstrap.min.js"></script>
@@ -52,36 +52,22 @@
         }
 
         socket.on("updateTR", function (data){
-          var tempAttr;
-          var pressAttr;
-          var powAttr;
-          var tvAttr;
-            for (i=0; i < data.attributes.length; i++) {
-              switch (data.attributes[i].name) {
-                case "Temperature":
-                  var tempAttr = data.attributes[i];
-                  break;
-                case "Pressure":
-                  var pressAttr = data.attributes[i];
-                  break; 
-                case "TVs on":
-                  var tvAttr = data.attributes[i];
-                  break;
-                case "Power consumed":
-                  var powAttr = data.attributes[i];
-                  break;
-              }
-            } 
+          var tempAttr = data.Temperature.value;
+          var pressAttr = data.Pressure.value;
+          var powAttr = data.Power_consumed.value;
+          var tvAttr = data.TVs_on.value;
+ 
           var tempIcon= '<span id="tempGaugeContainer"></span>';
           var presIcon= '<span id="presGaugeContainer"></span>';
           var tvIcon= '<span id="tvGaugeContainer"></span>';
           var powIcon= '<span id="powerGaugeContainer"></span>';
+
           createGauges();
           $("#name").html(data.id);
-          $('#natt1').html(tempAttr.name);
-          $('#natt2').html(pressAttr.name);
-          $('#natt3').html(tvAttr.name);
-          $('#natt4').html(powAttr.name);
+          $('#natt1').html("Temperature");
+          $('#natt2').html("Pressure");
+          $('#natt3').html("TVs on");
+          $('#natt4').html("Power consumed");
           $('#att1').html(tempIcon);
           $('#att2').html(presIcon);
           $('#att3').html(tvIcon);
@@ -90,10 +76,10 @@
           gauges["pres"].render();
           gauges["tv"].render();
           gauges["power"].render();
-          gauges["temp"].redraw(Math.round(tempAttr.value * 100) / 100);
-          gauges["pres"].redraw(Math.round(pressAttr.value * 100) / 100);
-          gauges["tv"].redraw(Math.round(tvAttr.value * 100) / 100);
-          gauges["power"].redraw(Math.round(powAttr.value * 100) / 100);
+          gauges["temp"].redraw(Math.round(tempAttr * 100) / 100);
+          gauges["pres"].redraw(Math.round(pressAttr * 100) / 100);
+          gauges["tv"].redraw(Math.round(tvAttr * 100) / 100);
+          gauges["power"].redraw(Math.round(powAttr * 100) / 100);
         });
       });
     </script>
@@ -106,11 +92,12 @@
     <div id='warped'>
     <div class="container text-center align-center">
     <h1 class="page-header">Television Room Control Panel</h1>
-    <div class="logout"><a href="#" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
+    <div class="logout"><a href="/logout" onclick="Fiware.signOut('account'); return false">Log Out</a></div> 
     <div class="col-md-3"><h3 id="natt1"></h3><span id="att1"></span></div>
     <div class="col-md-3"><h3 id="natt2"></h3><span id="att2"></span></div>
     <div class="col-md-3"><h3 id="natt3"></h3><div id="att3"></div></div>
     <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div> 
+    <a href="/back"> <button class="btn btn-lg btn-primary btn-block">Go back</button></a>
     </div>
     </div>
     </div>

@@ -3,7 +3,7 @@
 # Author: Alejandro Pozo Huertas
 # Entrypoint for Pep Proxy in chocolate factory application
 
-# See if access to idm information is available
+# See if access to IdM information is available
 function conex_idm () {
   while
     CONEXIDM=`curl --write-out %{http_code} --silent --output /dev/null http://idm:8000`

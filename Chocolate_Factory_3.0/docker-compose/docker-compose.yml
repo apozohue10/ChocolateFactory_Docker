@@ -22,6 +22,14 @@ services:
     networks:
       sensors:
 
+  pepproxySensors:
+    image: apozohue10/proxysensors
+    ports:
+     - "8071:8070"
+    networks:
+      sensors:
+        ipv4_address: 172.18.1.30
+
   mongo:
     image: mongo:3.2
     volumes:
@@ -64,9 +72,11 @@ services:
     networks:
       factory:
         ipv4_address: 172.18.0.6
+      sensors:
+        ipv4_address: 172.18.1.45
 
   pepproxy:
-    image: apozohue10/pepproxy
+    image: apozohue10/proxyusers
     ports:
      - "8070:8070"
     networks:

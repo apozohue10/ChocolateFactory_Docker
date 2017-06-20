@@ -1,6 +1,6 @@
-Chocolate Room-Room/Temperature-float-24-28|Pressure-integer-700-800|Waterfall speed-float-10-50|River level-integer-40-60|Occupation-integer-30-60
-Inventing Room-Room/Temperature-float-24-28|Pressure-integer-700-800|Experimental Chewing Gum size-float-10-50|Experiments volatility-integer-0-500|Occupation-integer-30-60
-Television Room-Room/Temperature-float-24-28|Pressure-integer-700-800|TVs on-float-10-50|Power consumed-integer-2000-4000|Occupation-integer-30-60
-Big hall-Room/Temperature-float-24-28|Pressure-integer-700-800|Occupation-integer-50-100
-Willy wonka office-Room/Temperature-float-24-28|Pressure-integer-700-800|Occupation-integer-1-10
-Elevator-Transportation/Temperature-float-24-28|Pressure-integer-700-800|Floor-integer-1-20|Occupation-integer-1-4
+Chocolate_Room-Room/Temperature-Float-24-28|Pressure-Integer-700-800|Waterfall_speed-Float-10-50|River_level-Integer-40-60|Occupation-Integer-30-60
+Inventing_Room-Room/Temperature-Float-24-28|Pressure-Integer-700-800|Experimental_Chewing_Gum_size-Float-10-50|Experiments_volatility-Integer-0-500|Occupation-Integer-30-60
+Television_Room-Room/Temperature-Float-24-28|Pressure-Integer-700-800|TVs_on-Float-10-50|Power_consumed-Integer-2000-4000|Occupation-Integer-30-60
+Big_hall-Room/Temperature-Float-24-28|Pressure-Integer-700-800|Occupation-Integer-50-100
+Willy_wonka_office-Room/Temperature-Float-24-28|Pressure-Integer-700-800|Occupation-Integer-1-10
+Elevator-Transportation/Temperature-Float-24-28|Pressure-Integer-700-800|Floor-Integer-1-20|Occupation-Integer-1-4
