@@ -130,8 +130,6 @@ app.post("/contextResponseAR", function(req, resp){
 
 app.post("/contextResponseARA", function(req, resp){
   var theJson = req.body.data[0]
-  console.log("---------------")
-  console.log(theJson)
   subID = req.body.subscriptionId;
   console.log("Occupation " + subID);
   var exist = subIds.indexOf(subID);
