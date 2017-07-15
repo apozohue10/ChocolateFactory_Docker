@@ -25,7 +25,7 @@ This elements are created automatically when running the environment:
 - Users, roles and permissions in IdM
 - Domain and Policies in Authzforce
 
-Process:
+Process A:
 - [1] The app redirects to the IDM portal in which the user sign in.
 - [2] The user gets an access token.
 - [3] The app uses the access token to send a request to obtain a webview permissions to the Pep Proxy.
@@ -37,6 +37,15 @@ Process:
 - [9] The app sends a subscription request to the context broker.
 - [10] The Context Croker obtain sensors information from mongo database.
 - [11] The Context Broker notify the application with de sensors information.
+
+Process B:
+- [1] Sensors send a request to IdM to obtain an access token.
+- [2] IdM sends an access token to each sensor.
+- [3] The sensors update values by sending a request to Context Broker through Pep Proxy.
+- [4] Pep Proxy send a request to IDM to obtain information about the sensor (specifically the role).
+- [5] IDM sends information about the sensor  to Pep Proxy.
+- [6] Sensor redirect requests from sensors to Context Broker.
+- [7] Context Broker store information in Mongo Database
 
 
 Context Broker, MongoDB and Authzforce images are downloaded from Dockerhub:

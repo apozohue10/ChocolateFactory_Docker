@@ -13,6 +13,9 @@ var app = express();
 var queryContext = require('./context_operations/queryContext');
 var subscriptions = require('./context_operations/subscription');
 
+// Set more sockets to http connections
+http.globalAgent.maxSockets = 40;
+
 //IdM requirements 
 var OAuth2 = require('./oauth2').OAuth2;
 var config = require('./config');

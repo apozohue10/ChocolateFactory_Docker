@@ -303,7 +303,7 @@ def test_data():
                     role_factoryOwner, perm_pubrolassign)
 
     perm_map = keystone.fiware_roles.permissions.create(
-                name='admin-map', 
+                name='admin-room', 
                 application=chocolateFactory_app, 
                 action= 'POST', 
                 resource= 'Admin Room')
