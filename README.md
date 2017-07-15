@@ -14,7 +14,7 @@ Description
 --------------
 The application architecture can be seen in the following image:
 
-![Architecture](Chocolate_Factory_3.0/diagrams/current_architecture.png?raw=true "diagrama_general.png")
+![Architecture](Graphic_Chocolate_Factory/diagrams/current_architecture.png?raw=true "diagrama_general.png")
 
 There are 7 containers: Chocolate Factory, IdM, AuthZForce, Pep Proxy, Context Broker, Sensor y MongoDB. 
 
