@@ -1,0 +1,14 @@
+/************* typography*******/
+
+@font-face {
+    font-family: "willywonkaregular";
+    src: url('FDC_style_guide/fonts/willywonka/willywonka-webfont.eot');
+    src: url('FDC_style_guide/fonts/willywonka/willywonka-webfont.eot?#iefix') format('embedded-opentype'),
+         url('FDC_style_guide/fonts/willywonka/willywonka-webfont.woff2') format('woff2'),
+         url('FDC_style_guide/fonts/willywonka/willywonka-webfont.woff') format('woff'),
+         url('FDC_style_guide/fonts/willywonka/willywonka-webfont.ttf') format('truetype'),
+         url('FDC_style_guide/fonts/willywonka/willywonka-webfont.svg#willywonkaregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

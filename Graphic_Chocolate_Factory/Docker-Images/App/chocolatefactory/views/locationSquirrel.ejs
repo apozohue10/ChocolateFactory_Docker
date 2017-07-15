@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Squirrels Location</title>
+  <link rel="stylesheet" href="stylesheets/styleSquirrelLocation.css"> 
+  </script> 
+</head>
+<body>
+
+<h1>Squirrels Location</h1>
+<div class="logout"><a href="/back" onclick="Fiware.signOut('account'); return false">Go Back</a></div>
+
+<div id="googleMap"></div>
+
+<script>
+function myMap() {
+
+  serverData = <%- JSON.stringify(data) %>;;
+  console.log(serverData)
+  console.log(JSON.parse(serverData))
+
+  locations = []
+  for (i = 0; i < JSON.parse(serverData).contextResponses.length; i++) {
+      locations.push(JSON.parse(serverData).contextResponses[i].contextElement.attributes[0].value)
+  }
+
+  console.log(locations)
+
+ 	var mapOptions = {
+   		zoom: 18,
+   		minZoom: 17, 
+   		maxZoom: 19,
+    	center: new google.maps.LatLng(40.925950,-4.063100),
+    	mapTypeControl: false,
+    	mapTypeId: 'satellite',
+    	draggable: false
+	}
+
+	var mapProp= new google.maps.Map(document.getElementById("googleMap"), mapOptions);
+
+	var icon = {
+	    url: "../images/squirrel.png", 
+	    scaledSize: new google.maps.Size(40, 40),
+	};
+
+
+	// Squirrel 1
+	var marker1 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[0].split(',')[0]),parseFloat(locations[0].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+	var infowindow1 = new google.maps.InfoWindow({
+    	content: "Squirrel 1"
+  	});
+
+    marker1.addListener('click', function() {
+    	infowindow1.open(mapProp, marker1);
+  	});
+
+    // Squirrel 2
+    var marker2 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[1].split(',')[0]),parseFloat(locations[1].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow2 = new google.maps.InfoWindow({
+    	content: "Squirrel 2"
+  	});
+
+    marker2.addListener('click', function() {
+    	infowindow2.open(mapProp, marker2);
+  	});
+
+    // Squirrel 3
+    var marker3 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[2].split(',')[0]),parseFloat(locations[2].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow3 = new google.maps.InfoWindow({
+    	content: "Squirrel 3"
+  	});
+
+    marker3.addListener('click', function() {
+    	infowindow3.open(mapProp, marker3);
+  	});
+
+    // Squirrel 4
+    var marker4 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[3].split(',')[0]),parseFloat(locations[3].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow4 = new google.maps.InfoWindow({
+    	content: "Squirrel 4"
+  	});
+
+    marker4.addListener('click', function() {
+    	infowindow4.open(mapProp, marker4);
+  	});
+
+    // Squirrel 5
+    var marker5 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[4].split(',')[0]),parseFloat(locations[4].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow5 = new google.maps.InfoWindow({
+    	content: "Squirrel 5"
+  	});
+
+    marker5.addListener('click', function() {
+    	infowindow5.open(mapProp, marker5);
+  	});
+
+    // Squirrel 6
+    var marker6 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[5].split(',')[0]),parseFloat(locations[5].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow6 = new google.maps.InfoWindow({
+    	content: "Squirrel 6"
+  	});
+
+    marker6.addListener('click', function() {
+    	infowindow6.open(mapProp, marker6);
+  	});
+
+    // Squirrel 7
+    var marker7 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[6].split(',')[0]),parseFloat(locations[6].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow7 = new google.maps.InfoWindow({
+    	content: "Squirrel 7"
+  	});
+
+    marker7.addListener('click', function() {
+    	infowindow7.open(mapProp, marker7);
+  	});
+
+    // Squirrel 8
+    var marker8 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[7].split(',')[0]),parseFloat(locations[7].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow8 = new google.maps.InfoWindow({
+    	content: "Squirrel 8"
+  	});
+
+    marker8.addListener('click', function() {
+    	infowindow8.open(mapProp, marker8);
+  	});
+
+    // Squirrel 9
+    var marker9 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[8].split(',')[0]),parseFloat(locations[8].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow9 = new google.maps.InfoWindow({
+    	content: "Squirrel 9"
+  	});
+
+    marker9.addListener('click', function() {
+    	infowindow9.open(mapProp, marker9);
+  	});
+
+    // Squirrel 10
+    var marker10 = new google.maps.Marker({
+          position: new google.maps.LatLng(parseFloat(locations[9].split(',')[0]),parseFloat(locations[9].split(',')[1])),
+          map: mapProp,
+          icon: icon
+    });
+
+    var infowindow10 = new google.maps.InfoWindow({
+    	content: "Squirrel 10"
+  	});
+
+    marker10.addListener('click', function() {
+    	infowindow10.open(mapProp, marker10);
+  	});
+}
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDajwI2l4Pvy3UdByc5nE1xRyogAXg32u8&callback=myMap" async defer></script>
+
+</body>
+</html>

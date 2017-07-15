@@ -1,0 +1,108 @@
+<!DOCTYPE html>  
+<html lang="en">  
+  <head>
+    <meta charset="utf-8">
+    <title>Inventing Room</title>
+    <script src="http://localhost:1028/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/liquidFillGauge.js"></script>
+    <script type="text/javascript" src="javascripts/thermometer.js"></script>
+    <script type="text/javascript" src="javascripts/gauge.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" language="JavaScript"></script>
+    <script type="text/javascript" src="javascripts/singout.js"></script>
+    <script>
+      $(document).ready(function() {
+        var socket = io();
+        var config2 = liquidFillGaugeDefaultSettings();
+          config2.circleColor = "#D4AB6A";
+          config2.textColor = "#553300";
+          config2.waveTextColor = "#805615";
+          config2.waveColor = "#AA7D39";
+          config2.circleThickness = 0.1;
+          config2.circleFillGap = 0.2;
+          config2.textVertPosition = 0.8;
+          config2.waveAnimateTime = 2000;
+          config2.waveHeight = 0.3;
+          config2.waveCount = 1;
+
+        var gauges = [];
+        function createGauge(name, label, min, max){
+            var config = 
+            {
+              size: 230,
+              label: label,
+              min: undefined != min ? min : 0,
+              max: undefined != max ? max : 100,
+              minorTicks: 5
+            };
+          
+          var range = config.max - config.min;
+          config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
+          config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+          
+          gauges[name] = new Gauge(name + "GaugeContainer", config);
+        }
+
+        function createGauges() {
+          createGauge("temp", "ºc", 0, 40);
+          createGauge("pres", "mmhg", 0, 2000);
+          createGauge("gum", "cm2", 0, 50);
+          createGauge("vol", "ºc/atm", 0, 500);
+        }
+
+        socket.on('updateIR', function (data) { 
+          var tempAttr = data.Temperature.value;
+          var pressAttr = data.Pressure.value;
+          var chewAttr = data.Experimental_Chewing_Gum_size.value;
+          var volAttr = data.Experiments_volatility.value;
+
+          var tempIcon= '<span id="tempGaugeContainer"></span>';
+          var presIcon= '<span id="presGaugeContainer"></span>';
+          var gumIcon= '<span id="gumGaugeContainer"></span>';
+          var volIcon= '<span id="volGaugeContainer"></span>';
+
+          createGauges();
+          $("#name").html(data.id);
+          $('#natt1').html("Temperature");
+          $('#natt2').html("Pressure");
+          $('#natt3').html("Exp. Chewing Gum size");
+          $('#natt4').html("Experiments volatility");
+          $('#att1').html(tempIcon);
+          $('#att2').html(presIcon);
+          $('#att3').html(gumIcon);
+          $('#att4').html(volIcon);
+          gauges["temp"].render();
+          gauges["pres"].render();
+          gauges["gum"].render();
+          gauges["vol"].render();
+          gauges["temp"].redraw(Math.round(tempAttr * 100) / 100);
+          gauges["pres"].redraw(Math.round(pressAttr * 100) / 100);
+          gauges["gum"].redraw(Math.round(chewAttr * 100) / 100);
+          gauges["vol"].redraw(Math.round(volAttr * 100) / 100);
+        });
+      });
+    </script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+  </head>
+  <body id="index">
+    <div id="wrap">
+    <div class="container">
+    <div id='warped'>
+    <div class="container text-center align-center">
+    <h1 class="page-header">Inventing Room Control Panel</h1>
+    <div class="logout"><a href="/back" onclick="Fiware.signOut('account'); return false">Go Back</a></div> 
+    <div class="col-md-3"><h3 id="natt1"></h3><span id="att1"></span></div>
+    <div class="col-md-3"><h3 id="natt2"></h3><span id="att2"></span></div>
+    <div class="col-md-3"><h3 id="natt3"></h3><div id="att3"></div></div>
+    <div class="col-md-3"><h3 id="natt4"></h3><span id="att4"></span></div> 
+    <a href="/back"> <button class="btn btn-lg btn-primary btn-block">Go back</button></a>
+    </div>
+    </div>
+    </div>
+    </div>
+    <footer class="footer">   
+    </footer>
+  </body>
+</html>  

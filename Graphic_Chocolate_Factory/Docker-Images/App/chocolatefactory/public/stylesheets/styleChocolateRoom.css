@@ -1,0 +1,192 @@
+@font-face {
+  font-family: "willywonkaregular";
+  src: url("FDC_style_guide/fonts/willywonka/willywonka-webfont.eot");
+  src: url("FDC_style_guide/fonts/willywonka/willywonka-webfont.eot?#iefix") format("embedded-opentype"), url("FDC_style_guide/fonts/willywonka/willywonka-webfont.woff2") format("woff2"), url("FDC_style_guide/fonts/willywonka/willywonka-webfont.woff") format("woff"), url("FDC_style_guide/fonts/willywonka/willywonka-webfont.ttf") format("truetype"), url("FDC_style_guide/fonts/willywonka/willywonka-webfont.svg#willywonkaregular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  overflow: hidden;
+  background: #222428;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-family: "willywonkaregular";
+}
+
+h1 {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  color: white;
+  font-size: 3vw;
+  top: 5%;
+}
+
+.logout{
+  font-size: 1.6vw;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+}
+
+#plusSpeed {
+  background-color: white; 
+  position: absolute;
+  top: 9%;
+  left: 8%;
+  width: 8%;
+  height: 4.5%;
+  text-align: center;
+  display: inline-block;
+}
+
+#minusSpeed {
+  background-color: white;
+  position: absolute;
+  top: 9%;
+  left: 73%;
+  width: 8%;
+  height: 4.5%;
+  text-align: center;
+  display: inline-block;
+}
+
+#speedValue {
+  border-radius: 20px;
+  border: 3px solid white;
+  border-radius: 5%;
+  font-size: 2vw;
+  color: white;
+  position: absolute;
+  top: 9%;
+  height: 4.5%;
+  left: 20%;
+  width: 50%;
+  text-align: center;
+  display: inline-block;
+}
+
+#plusRiver {
+  background-color: white; 
+  position: absolute;
+  top: 29%;
+  left: 8%;
+  width: 8%;
+  height: 4.5%;
+  text-align: center;
+  display: inline-block;
+}
+
+#minusRiver {
+  background-color: white;
+  position: absolute;
+  top: 29%;
+  left: 73%;
+  width: 8%;
+  height: 4.5%;
+  text-align: center;
+  display: inline-block;
+}
+
+#riverValue {
+  border-radius: 20px;
+  border: 3px solid white;
+  border-radius: 5%;
+  font-size: 2vw;
+  color: white;
+  position: absolute;
+  top: 29%;
+  height: 4.5%;
+  left: 20%;
+  width: 50%;
+  text-align: center;
+  display: inline-block;
+}
+
+#tempValue {
+  border-radius: 20px;
+  border: 3px solid white;
+  border-radius: 5%;
+  font-size: 2vw;
+  color: white;
+  position: absolute;
+  top: 49%;
+  height: 4.5%;
+  left: 20%;
+  width: 50%;
+  text-align: center;
+  display: inline-block;
+}
+
+#pressValue {
+  border-radius: 20px;
+  border: 3px solid white;
+  border-radius: 5%;
+  font-size: 2vw;
+  color: white;
+  position: absolute;
+  top: 69%;
+  height: 4.5%;
+  left: 20%;
+  width: 50%;
+  text-align: center;
+  display: inline-block;
+}
+
+.controls {
+  position: absolute;
+  margin: 10px;
+  margin-top: 7%;
+  margin-left: 5%;
+  height: 100%;
+  width: 35%;
+  font-size: 1.7vw;
+}
+
+.controls span {
+  color: white;
+}
+
+#speed {
+  width: 100%;
+  height: 20%;
+}
+
+#river {
+  width: 100%;
+  height: 20%;
+}
+
+#temp {
+  width: 100%;
+  height: 20%;
+}
+
+#press {
+  width: 100%;
+  height: 20%;
+}
+
+#scene {
+  width: 90%;
+  height: 100%;
+  position: relative;
+  left: 40%;
+  margin-top: 7%;
+}
+
+#container {
+  box-shadow: inset 0 1px 0 #444, 0 -1px 0 #000;
+  position: absolute;
+  top: 11%;
+  left: 34%;
+  width: 8%;
+  height: 23.71%;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}

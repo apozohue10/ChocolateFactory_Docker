@@ -1,0 +1,84 @@
+/****************************** layouts */
+/* line 1, ../../../../sass/FDC_style_guide/general/layouts/_footer.scss */
+#index footer {
+  height: 296px;
+  background-image: url(../images/footer.png);
+  position: relative;
+}
+
+/* line 1, ../../../../sass/FDC_style_guide/general/layouts/_scaffolding.scss */
+html,
+body {
+  height: 100%;
+}
+
+/* line 5, ../../../../sass/FDC_style_guide/general/layouts/_scaffolding.scss */
+.back {
+  background: -moz-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(31%, #c5eef9), color-stop(56%, #f6eaff), color-stop(87%, #feffe2));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c5eef9', endColorstr='#feffe2',GradientType=0 );
+  /* IE6-9 */
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+/* line 18, ../../../../sass/FDC_style_guide/general/layouts/_scaffolding.scss */
+body {
+  background: -moz-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(31%, #c5eef9), color-stop(56%, #f6eaff), color-stop(87%, #feffe2));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #c5eef9 31%, #f6eaff 56%, #feffe2 87%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c5eef9', endColorstr='#feffe2',GradientType=0 );
+  /* IE6-9 */
+  -webkit-transition: background-color 1.5s ease-in-out;
+  -moz-transition: background-color 1.5s ease-in-out;
+  -o-transition: background-color 1.5s ease-in-out;
+  transition: background-color 1.5s ease-in-out;
+  min-height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  /*&:hover{
+  	background: #c5eef9; /* Old browsers 
+	background: -moz-linear-gradient(top,  #c5eef9 31%, #f6eaff 56%, #feffe2 87%); /* FF3.6+
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(31%,#c5eef9), color-stop(56%,#f6eaff), color-stop(87%,#feffe2)); /* Chrome,Safari4+ */
+  	/*background: -webkit-linear-gradient(top,  #c5eef9 31%,#f6eaff 56%,#feffe2 87%); Chrome10+,Safari5.1+ 
+  	background: -o-linear-gradient(top,  #c5eef9 31%,#f6eaff 56%,#feffe2 87%); /* Opera 11.10+ 
+  	background: -ms-linear-gradient(top,  #c5eef9 31%,#f6eaff 56%,#feffe2 87%); /* IE10+ 
+  	background: linear-gradient(to bottom,  #c5eef9 31%,#f6eaff 56%,#feffe2 87%); /* W3C 
+  	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c5eef9', endColorstr='#feffe2',GradientType=0 ); /* IE6-9
+  
+    	footer{
+    		background-color: rgb(1, 219, 12);
+    	}
+    } */
+}
+
+/* line 49, ../../../../sass/FDC_style_guide/general/layouts/_scaffolding.scss */
+#wrap {
+  min-height: 100%;
+  max-width: 2000px;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by its height */
+  margin: 0px auto -296px;
+  /* Pad bottom by footer height */
+  padding: 0px;
+}

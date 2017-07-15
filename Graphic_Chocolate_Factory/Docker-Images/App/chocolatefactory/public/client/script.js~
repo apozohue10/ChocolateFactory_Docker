@@ -1,0 +1,14 @@
+var socket = io();
+var theData = {};
+
+
+socket.on('update', function(message){
+  theData = message;
+  //console.log(message);
+
+});
+
+var interval = setInterval(function(){
+  socket.emit('getUpdate');
+
+},1000);
