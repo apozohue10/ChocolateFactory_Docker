@@ -91,7 +91,7 @@ In Docker-Images we can find:
     -  The default_provision.py which creates all users, roles and permissions through keystone API and also creates domains and policies in authzforce.
     -  The local_settings to configure keystone and horizon.
     -  Templates folder which contains de templates to create the domain and policies.
-- PepProxy folder which contains:
+- ProxyApp and ProxySensors folder which contains:
     - The dockerfile to create the image.
     - The entrypoint for the container.
     - Files with some changes needed that will overwrite the existing ones in the container.
@@ -181,7 +181,4 @@ To view individual logs:
 
 name_container could be: orion, mongo, idm, pepproxy, authzforce o chocolatefactory.
 
-To delete all docker images of the project:
-
-*sudo docker rmi apozohue10/sensor apozohue10/chocolatefactory apozohue10/idm apozohue10/pepproxy mongo:3.2 fiware/orion fiware/authzforce-ce-server:release-5.4.1*
 
