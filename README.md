@@ -181,4 +181,7 @@ To view individual logs:
 
 name_container could be: orion, mongo, idm, pepproxy, authzforce o chocolatefactory.
 
+3D Graphic Version
+-------------------
 
+If you want to deploy the application with better views, you need to download the Graphic App from Releases and build de IdM and Applicaction images. Then in docker-compose file configure the new images.
