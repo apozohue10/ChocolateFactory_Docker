@@ -163,7 +163,7 @@ def running_containers():
 				listSemaphore[6] = False
 				print ("--Chocolate Factory container is running--")
 				print ("--Scale sensors and run them--")
-				os.system("cd docker-compose && sudo docker-compose scale sensor=34")
+				os.system("cd docker-compose && sudo docker-compose scale sensor=25")
 				configSensors.run_sensor()
 		except requests.exceptions.ConnectionError:
 			pass
